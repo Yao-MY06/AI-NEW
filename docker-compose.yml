@@ -1,0 +1,22 @@
+# AI-NEW 容器编排：常驻 cron 调度 + 管理后台。
+# 用法：docker compose up -d --build
+# - .env 在构建时被 .dockerignore 排除，运行时经 env_file 注入（Key 不打进镜像）
+# - 容器内无 Edge，PDF 导出自动跳过；HTML/MD/TXT 正常生成
+services:
+  ainew:
+    build: .
+    env_file: .env
+    environment:
+      - CRON_EXPR=30 8 * * * # 北京时间每日 08:30（TZ 见下），与 Windows 计划任务一致
+      - RUN_ON_START=false # true 则容器启动后先跑一次
+      - ADMIN_ENABLED=true # 同进程启动管理后台
+      - ADMIN_HOST=0.0.0.0 # 容器内监听全部网卡；端口映射仍仅暴露宿主机本机
+      - TZ=Asia/Shanghai
+    command: npm run cron # 覆写镜像默认的单次运行
+    volumes:
+      - ./data:/app/data # SQLite 库 + settings.json
+      - ./output:/app/output # 日报与存档
+      - ./logs:/app/logs
+    ports:
+      - '127.0.0.1:5666:5666' # 管理后台只暴露宿主机本机
+    restart: unless-stopped

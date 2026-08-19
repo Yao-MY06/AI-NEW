@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci # better-sqlite3 走 prebuilt 二进制，无需编译工具链
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test # vitest 纯函数 + :memory: 数据库，不触网

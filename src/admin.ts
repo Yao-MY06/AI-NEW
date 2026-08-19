@@ -214,9 +214,16 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`[admin] 管理后台已启动: http://127.0.0.1:${PORT}  （Ctrl+C 退出）`);
-});
+/** 启动监听：默认仅本机；Docker 等场景可用 ADMIN_HOST=0.0.0.0 覆盖 */
+export function startAdmin(): void {
+  const host = process.env.ADMIN_HOST || '127.0.0.1';
+  server.listen(PORT, host, () => {
+    console.log(`[admin] 管理后台已启动: http://${host}:${PORT}  （Ctrl+C 退出）`);
+  });
+}
+
+// 直接运行（npm run admin）时启动；被 cron.ts 引入时不自动启动
+if (process.argv[1]?.replace(/\\/g, '/').endsWith('src/admin.ts')) startAdmin();
 
 function adminPage(): string {
   return `<!DOCTYPE html>
