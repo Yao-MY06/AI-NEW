@@ -1,10 +1,12 @@
 import { setupProxy } from './proxy.js';
-import { SUMMARY } from './config.js';
+import { OUTPUT_DIR, SUMMARY } from './config.js';
 import { fetchAllFeeds } from './feeds.js';
 import { processArticles } from './filter.js';
 import { summarizeAll } from './summarize.js';
-import { renderReport, writeReport } from './report.js';
+import { renderReport, renderTextReport, writeReport, writeTextReport } from './report.js';
 import { renderHtmlReport, writeHtmlReport } from './report-html.js';
+import { tryPrintPdf } from './pdf.js';
+import { updateArchive } from './archive.js';
 
 /** 解析 --days=N 参数，默认最近 1 天 */
 function parseDays(): number {
@@ -51,16 +53,25 @@ async function main(): Promise<void> {
 
   console.log('\n4/4 生成报告...');
   const since = new Date(sinceMs);
-  const htmlFile = writeHtmlReport(
-    renderHtmlReport(articles, results, feeds, stats, since),
-  );
-  const mdFile = writeReport(renderReport(articles, results, feeds, stats, since)); // 备用格式
+  // 分类/中文标题回填到文章对象，供各渲染器使用
+  results.forEach((r, i) => {
+    if (r.category) articles[i].category = r.category;
+    if (r.titleZh) articles[i].titleZh = r.titleZh;
+  });
+
+  const htmlFile = writeHtmlReport(renderHtmlReport(articles, results, feeds, stats, since));
+  const mdFile = writeReport(renderReport(articles, results, feeds, stats, since)); // Notion 可直接导入
+  const txtFile = writeTextReport(renderTextReport(articles, results, stats));
+  tryPrintPdf(htmlFile);
+  const archive = updateArchive(articles, results, stats);
 
   console.log(
     `\n完成: ${articles.length} 篇（总结成功 ${stats.ok}，缓存命中 ${stats.cached}，失败 ${stats.failed}）`,
   );
   console.log(`报告(HTML): ${htmlFile}`);
-  console.log(`备用(MD): ${mdFile}`);
+  console.log(`备用(MD/Notion): ${mdFile}`);
+  console.log(`纯文本: ${txtFile}`);
+  console.log(`存档首页: ${archive.index}`);
   console.log(`耗时: ${((Date.now() - started) / 1000).toFixed(1)}s`);
 }
 

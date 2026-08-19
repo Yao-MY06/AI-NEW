@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 新闻日报 · 历史存档</title>
+<style>
+  :root {
+    --paper: #faf8f3; --paper-raise: #ffffff; --ink: #1c1a17; --ink-soft: #5c564d;
+    --ink-faint: #8f887c; --rule: #e6e1d6; --accent: #b42318;
+    --accent-soft: rgba(180, 35, 24, 0.08);
+    --serif: Georgia, "Times New Roman", "Songti SC", SimSun, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  html[data-theme="dark"] {
+    --paper: #161513; --paper-raise: #1e1c19; --ink: #e9e5dc; --ink-soft: #a8a196;
+    --ink-faint: #6e675c; --rule: #2c2a26; --accent: #ef6a5e;
+    --accent-soft: rgba(239, 106, 94, 0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--paper); color: var(--ink); line-height: 1.7; font-size: 15px; }
+  .sheet { max-width: 880px; margin: 0 auto; padding: 0 24px 80px; }
+  header.masthead { padding: 44px 0 0; border-top: 4px solid var(--accent); }
+  .masthead-inner { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 20px 0 14px; border-bottom: 1px solid var(--ink); }
+  h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(28px, 5vw, 40px); }
+  h1 .ai { color: var(--accent); font-style: italic; }
+  .back { font-size: 13px; color: var(--ink-soft); }
+  .back a { color: var(--accent); text-decoration: none; }
+  .toolbar { position: sticky; top: 0; z-index: 10; display: flex; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--rule); background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(8px); flex-wrap: wrap; }
+  .search { flex: 1; min-width: 160px; max-width: 320px; padding: 6px 12px; font-size: 13px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper-raise); color: var(--ink); outline: none; }
+  .search:focus { border-color: var(--accent); }
+  .tool-btn { font-size: 12.5px; cursor: pointer; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--paper-raise); color: var(--ink-soft); }
+  .tool-btn:hover { color: var(--ink); border-color: var(--ink-faint); }
+  h2.sec { font-family: var(--serif); font-size: 20px; margin: 34px 0 6px; }
+  .day {
+    display: flex; gap: 16px; align-items: baseline; padding: 16px 0;
+    border-bottom: 1px solid var(--rule); flex-wrap: wrap;
+  }
+  .day-date { font-family: var(--serif); font-size: 20px; font-weight: 700; min-width: 108px; }
+  .day-date a { color: var(--ink); text-decoration: none; }
+  .day-date a:hover { color: var(--accent); }
+  .day-meta { color: var(--ink-soft); font-size: 12.5px; }
+  .day-meta b { color: var(--ink); }
+  .day-cats { display: flex; gap: 6px; flex-wrap: wrap; }
+  .day-cats span { font-size: 11px; color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 999px; padding: 1px 8px; }
+  .day-titles { flex-basis: 100%; color: var(--ink-faint); font-size: 12px; display: none; }
+  .day.open .day-titles { display: block; }
+  .day-titles li { margin: 2px 0; list-style: none; }
+  .day-titles a { color: var(--ink-soft); text-decoration: none; }
+  .day-titles a:hover { color: var(--accent); }
+  .day { cursor: pointer; }
+  .evt { border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; background: var(--paper-raise); }
+  .evt h3 { font-family: var(--serif); font-size: 16px; margin-bottom: 6px; }
+  .evt li { list-style: none; font-size: 13px; color: var(--ink-soft); margin: 3px 0; }
+  .evt li b { color: var(--accent); font-family: var(--serif); margin-right: 8px; }
+  .evt li a { color: var(--ink); text-decoration: none; }
+  .evt li a:hover { color: var(--accent); }
+  .empty { text-align: center; padding: 60px 0; color: var(--ink-faint); font-style: italic; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--ink-faint); font-size: 12px; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="masthead">
+    <div class="masthead-inner">
+      <h1><span class="ai">AI</span> 新闻日报 · 历史存档</h1>
+      <div class="back"><a href="./2026-08-19.html">→ 今日日报</a></div>
+    </div>
+  </header>
+  <div class="toolbar">
+    <input class="search" type="search" id="q" placeholder="检索全部历史标题…">
+    <button class="tool-btn" id="theme" type="button">🌙 深色</button>
+  </div>
+
+  <h2 class="sec">事件时间线 <small style="font-size:12px;color:var(--ink-faint)">（跨天同题自动聚类）</small></h2>
+  <div id="events"><div class="empty">暂无跨天事件（需要至少两天的存档）</div></div>
+
+  <h2 class="sec">按日期回溯</h2>
+  <div id="days"></div>
+  <div class="empty" id="empty" style="display:none">没有匹配的日期</div>
+  <footer>
+    <span>AI 新闻聚合器 · 存档</span>
+    <span>1 天</span>
+  </footer>
+</div>
+<script>
+  var DATA = [{"date":"2026-08-19","total":43,"ok":42,"failed":1,"bySource":{"Hacker News":29,"TechCrunch AI":7,"The Verge AI":7},"byCategory":{"产品应用":16,"安全风险":12,"大模型":2,"开源项目":3,"行业融资":6,"其他":2,"硬件芯片":2},"items":[{"t":"Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere","zh":"Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere","cat":"产品应用","src":"Hacker News","link":"https://github.com/elin66alpha/Relay"},{"t":"Ask HN: Is there any evidence of a frontier AI model being nerfed after release?","zh":"Ask HN：发布后是否存在对前沿AI模型进行降级的证据？","cat":"安全风险","src":"Hacker News","link":"https://news.ycombinator.com/item?id=49356287"},{"t":"The Recursive Economy: AI Self-Improvement and Scarcity","zh":"The Recursive Economy: AI 自我提升与稀缺性","cat":"大模型","src":"Hacker News","link":"https://recursive-economy.pages.dev/"},{"t":"Agent2Agent (A2A) joins Agentic AI Foundation (AAIF)'s open agentic stack","zh":"Agent2Agent (A2A) 加入 Agentic AI Foundation (AAIF) 的开源智能体堆栈","cat":"开源项目","src":"Hacker News","link":"https://aaif.io/blog/a2a-joins-aaif"},{"t":"Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?","zh":"Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?","cat":"行业融资","src":"Hacker News","link":"https://jamanetwork.com/journals/jama/fullarticle/2852952?guestAccessKey=562af865-a038-4425-993f-ff25e5e3a130"},{"t":"Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds","zh":"Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds","cat":"产品应用","src":"Hacker News","link":"https://warpdd.com"},{"t":"The End-State Fallacy: Where Is AI Security Headed?","zh":"The End-State Fallacy: Where Is AI Security Headed?","cat":"安全风险","src":"Hacker News","link":"https://endstatefallacy.com/"},{"t":"Sutton and Javed: Why AI Models Stop Learning, and How to Start It Again [video]","zh":"Sutton and Javed：为何AI模型停止学习，以及如何重新启动学习[视频]","cat":"大模型","src":"Hacker News","link":"https://www.youtube.com/watch?v=xH7U7w9Qzlo"},{"t":"She told no one about her agony except ChatGPT. What her death reveals about AI","zh":"她对ChatGPT倾诉痛苦，却无人知晓——Sophie Rottenberg之死揭示的AI风险","cat":"安全风险","src":"Hacker News","link":"https://www.npr.org/2026/08/18/nx-s1-5929575/ai-suicide-risks-mental-health"},{"t":"Follow-Up Thoughts on Watermarking Schemes for AI-Generated Text","zh":"Anthropic Claude 文本水印方案的后续思考","cat":"安全风险","src":"Hacker News","link":"https://daringfireball.net/2026/08/follow-up_thoughts_on_watermarking"},{"t":"SecIT Bench A frontier benchmark for AI agents in IT and security workflows","zh":"SecIT Bench：IT和安全工作流程中AI智能体的前沿基准测试","cat":"其他","src":"Hacker News","link":"https://secitbench.cribl.io/"},{"t":"Show HN: Monity.ai – Get notified when any website changes","zh":"Monity.ai – 获取任何网站变更通知","cat":"产品应用","src":"Hacker News","link":"https://apps.apple.com/pl/app/monity-ai/id6761957823"},{"t":"How to tame AI's voracious appetite for energy","zh":"如何驯服人工智能对能源的贪婪需求","cat":"硬件芯片","src":"Hacker News","link":"https://knowablemagazine.org/content/article/technology/2026/lowering-energy-use-artificial-intelligence-datacenters"},{"t":"Cerebras CS-4 rack systems juice chips for every last drop of AI performance","zh":"Cerebras CS-4 机架系统榨取芯片每一滴 AI 性能","cat":"硬件芯片","src":"Hacker News","link":"https://www.theregister.com/systems/2026/08/19/cerebras-cs-4-rack-systems-juice-chips-for-every-last-drop-of-ai-performance/5289286"},{"t":"Ask HN: How should I price an AI infrastructure platform?","zh":"如何定价AI基础设施平台？","cat":"行业融资","src":"Hacker News","link":"https://news.ycombinator.com/item?id=49354254"},{"t":"Unitree Robotics IPO: \"Embodied AI\" Valuation Bubble?","cat":"其他","src":"Hacker News","link":"https://www.cnn.com/2026/08/18/tech/china-unitree-ipo-intl-hnk"},{"t":"My AI Agents Ship Code While I Sleep. Nobody Reviews It","zh":"My AI Agents Ship Code While I Sleep. Nobody Reviews It","cat":"产品应用","src":"Hacker News","link":"https://goatsquadstudios.com/blog/how-i-work-with-ai-agents-autonomously"},{"t":"Show HN: Maritime, a platform for running AI agents for $1 a month","zh":"Show HN: Maritime，每月1美元运行AI智能体的平台","cat":"产品应用","src":"Hacker News","link":"https://maritime.sh"},{"t":"AI-drafted bills are swamping the House office that writes US laws","zh":"AI起草的法案淹没美国立法办公室","cat":"行业融资","src":"Hacker News","link":"https://gizmodo.com/its-absolutely-terrifying-ai-is-reportedly-slopping-up-the-bills-in-congress-2000799734"},{"t":"Cursor capitalizes on GitHub frustration, launches rival hosting platform","zh":"Cursor 利用 GitHub 愤怒，推出竞争性托管平台","cat":"产品应用","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/"},{"t":"Tail: A 0–5 scale for how much AI wrote this","zh":"Tail: 一种0-5级的AI创作贡献度标签","cat":"产品应用","src":"Hacker News","link":"https://beaucronin.com/tail/"},{"t":"AI usage patterns in software teams","zh":"Linear软件团队AI使用模式分析","cat":"产品应用","src":"Hacker News","link":"https://linear.app/data"},{"t":"Silicon Valley's AI boom is remaking American charity","zh":"硅谷AI热潮重塑美国慈善事业","cat":"行业融资","src":"Hacker News","link":"https://www.economist.com/international/2026/08/13/silicon-valleys-ai-boom-is-remaking-american-charity"},{"t":"Show HN: HashNotch – Premium AI Integrated Dynamic Island for the Mac OS","zh":"Show HN: HashNotch – 专为Mac OS打造的顶级AI集成动态岛","cat":"产品应用","src":"Hacker News","link":"https://news.ycombinator.com/item?id=49353148"},{"t":"Google Moves A2A Under Agentic AI Foundation","zh":"Google 将 A2A 协议移至 Agentic AI 基金会","cat":"行业融资","src":"Hacker News","link":"https://techstrong.ai/articles/google-moves-a2a-under-agentic-ai-foundation/"},{"t":"Show HN: ChatOSS – A Codex alternative for Open Source AI built on Ollama","zh":"Show HN: ChatOSS – 开源AI的Codex替代方案，基于Ollama构建","cat":"开源项目","src":"Hacker News","link":"https://chatoss.ai"},{"t":"Fact check: How do I spot AI-generated images?","zh":"如何识别AI生成的图像？","cat":"产品应用","src":"Hacker News","link":"https://www.dw.com/en/fact-check-how-do-i-spot-ai-generated-images/a-65252602"},{"t":"AI detection tools are proliferating. Here's why they won't last.","zh":"AI检测工具激增，但它们不会持久","cat":"安全风险","src":"Hacker News","link":"https://www.washingtonpost.com/opinions/2026/08/18/ai-detection-tools-are-proliferating-here-why-they-wont-last/"},{"t":"Has any one ever used Strands – the AI Agent SDK by AWS","zh":"AWS Strands – AI Agent SDK开源工具包","cat":"开源项目","src":"Hacker News","link":"https://strandsagents.com/"},{"t":"Blind Egyptian entrepreneur's AI app helps others 'see' the world","zh":"盲人埃及企业家开发的AI应用帮助他人“看见”世界","cat":"产品应用","src":"Hacker News","link":"https://www.reuters.com/world/middle-east/blind-egyptian-entrepreneurs-ai-app-helps-others-see-world-2026-08-18/"},{"t":"Robin Williams’ Instagram account brought back to fight ‘AI abuse’","zh":"Robin Williams Instagram账号回归以对抗“AI滥用”","cat":"安全风险","src":"The Verge AI","link":"https://www.theverge.com/entertainment/981644/robin-williams-instagram-account-ai"},{"t":"OpenAI lays out new security changes after its AI hacked Hugging Face","zh":"OpenAI宣布安全更新以应对AI黑客Hugging Face事件","cat":"安全风险","src":"The Verge AI","link":"https://www.theverge.com/ai-artificial-intelligence/981640/openai-security-changes-ai-hugging-face-hack"},{"t":"OpenAI institutes new safeguards after Hugging Face breach","zh":"OpenAI在Hugging Face泄露后实施新的安全措施","cat":"安全风险","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach/"},{"t":"Etched’s valuation doubles to $21B in a month","zh":"Etched估值一个月内翻倍达210亿美元","cat":"行业融资","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/etcheds-valuation-doubles-to-21b-in-a-month/"},{"t":"Why Apple’s camera-equipped AirPods may not be the ‘pervert pods’ consumers fear","zh":"苹果摄像头AirPods可能避免成为“色情Pods”，消费者不必担忧","cat":"安全风险","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/why-apples-camera-equipped-airpods-may-not-be-the-pervert-pods-consumers-fear/"},{"t":"Warp’s new system is an out-of-the-box software factory for AI development","zh":"Warp推出全新系统，AI软件开发工厂即开即用","cat":"产品应用","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development/"},{"t":"OpenAI launches a safer ChatGPT for teens — years after teens started using it","zh":"OpenAI推出更安全的ChatGPT青少年版——青少年开始使用它多年后","cat":"安全风险","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/openai-launches-a-safer-chatgpt-for-teens-years-after-teens-started-using-it/"},{"t":"Perplexity’s free AI offer left it with millions more users in India","zh":"Perplexity免费AI服务在印度吸引用户数激增","cat":"产品应用","src":"TechCrunch AI","link":"https://techcrunch.com/2026/08/18/perplexitys-free-ai-offer-left-it-with-millions-more-users-in-india/"},{"t":"Firefox’s Smart Window promises a better AI browser","zh":"Firefox的智能窗口承诺带来更好的AI浏览器","cat":"产品应用","src":"The Verge AI","link":"https://www.theverge.com/ai-artificial-intelligence/981283/mozilla-firefox-smart-window-ai-features"},{"t":"Google’s Pet Memory forgot who my cats are","zh":"Google的Pet Memory功能忘记了谁是我的猫","cat":"产品应用","src":"The Verge AI","link":"https://www.theverge.com/tech/981269/google-home-gemini-pet-memory-nest-camera-review"},{"t":"Elon Musk broke the FAA — Palantir is picking up the pieces","zh":"Elon Musk打破FAA规则——Palantir收拾残局","cat":"安全风险","src":"The Verge AI","link":"https://www.theverge.com/transportation/981194/faa-air-traffic-elon-musk-peter-thiel-palantir"},{"t":"ChatGPT is getting a dedicated mode for teens","zh":"ChatGPT 推出专为青少年设计的模式","cat":"安全风险","src":"The Verge AI","link":"https://www.theverge.com/ai-artificial-intelligence/981333/openai-chatgpt-teen-mode"},{"t":"Apple’s camera-equipped AirPods appear in leaked video","zh":"苹果摄像头AirPods首次亮相","cat":"产品应用","src":"The Verge AI","link":"https://www.theverge.com/tech/981326/apple-airpods-with-cameras-demo-video-leak"}],"ts":1787110307837}];
+
+  // ── 日期列表 ──
+  var daysEl = document.getElementById('days');
+  function renderDays(list) {
+    daysEl.innerHTML = list.length ? list.map(function (d) {
+      var cats = Object.entries(d.byCategory).sort(function (a, b) { return b[1] - a[1]; })
+        .map(function (c) { return '<span>' + esc(c[0]) + ' ' + c[1] + '</span>'; }).join('');
+      var titles = d.items.slice(0, 30).map(function (it) {
+        return '<li><a href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.zh || it.t) + '</a> <i style="opacity:.6">[' + esc(it.src) + ']</i></li>';
+      }).join('');
+      return '<div class="day" data-text="' + esc((d.items.map(function (i) { return (i.zh || '') + ' ' + i.t; }).join(' ') || '').toLowerCase()) + '">' +
+        '<div class="day-date"><a href="./' + d.date + '.html">' + d.date + '</a></div>' +
+        '<div class="day-meta"><b>' + d.total + '</b> 篇 · 总结 ' + d.ok + '</div>' +
+        '<div class="day-cats">' + cats + '</div>' +
+        '<ul class="day-titles">' + titles + '</ul></div>';
+    }).join('') : '';
+    document.querySelectorAll('.day').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        el.classList.toggle('open');
+      });
+    });
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  renderDays(DATA);
+  // 检索：在原始数据上匹配标题与日期
+  document.getElementById('q').addEventListener('input', function () {
+    var kw = this.value.trim().toLowerCase();
+    var list = kw ? DATA.filter(function (d) {
+      return d.items.some(function (it) { return ((it.zh || '') + ' ' + it.t).toLowerCase().indexOf(kw) !== -1; })
+        || d.date.indexOf(kw) !== -1;
+    }) : DATA;
+    renderDays(list);
+    document.getElementById('empty').style.display = list.length ? 'none' : 'block';
+  });
+
+  // ── 事件时间线：跨天标题词集聚类 ──
+  var STOP = new Set(['the','a','an','of','to','in','on','for','with','and','or','its','is','are','as','at','by','from','how','why','what','when','new','vs','using','after','before','your','you','their','this','that','about']);
+  function tokens(t) {
+    return new Set(t.toLowerCase().replace(/[^a-z0-9一-鿿]+/g, ' ').split(' ').filter(function (w) { return w.length > 1 && !STOP.has(w); }));
+  }
+  function jac(a, b) {
+    if (!a.size || !b.size) return 0;
+    var n = 0; a.forEach(function (w) { if (b.has(w)) n++; });
+    return n / (a.size + b.size - n);
+  }
+  (function buildEvents() {
+    var flat = [];
+    DATA.forEach(function (d) {
+      d.items.forEach(function (it) { flat.push({ date: d.date, t: it.t, zh: it.zh, link: it.link, src: it.src, tk: tokens(it.t) }); });
+    });
+    if (flat.length < 2) return;
+    var parent = flat.map(function (_, i) { return i; });
+    function find(x) { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+    for (var i = 0; i < flat.length; i++) {
+      for (var j = i + 1; j < flat.length; j++) {
+        if (flat[i].date === flat[j].date) continue; // 只跨天聚类
+        if (jac(flat[i].tk, flat[j].tk) >= 0.45) {
+          var a = find(i), b = find(j);
+          if (a !== b) parent[a] = b;
+        }
+      }
+    }
+    var groups = {};
+    flat.forEach(function (_, i) {
+      var r = find(i);
+      (groups[r] = groups[r] || []).push(flat[i]);
+    });
+    var evts = Object.values(groups)
+      .filter(function (g) { return new Set(g.map(function (x) { return x.date; })).size >= 2; })
+      .sort(function (a, b) { return b.length - a.length; })
+      .slice(0, 12);
+    if (!evts.length) return;
+    document.getElementById('events').innerHTML = evts.map(function (g) {
+      g.sort(function (a, b) { return a.date.localeCompare(b.date); });
+      var title = g[g.length - 1].zh || g[g.length - 1].t;
+      var lis = g.map(function (x) {
+        return '<li><b>' + x.date + '</b><a href="' + esc(x.link) + '" target="_blank" rel="noopener">' + esc(x.zh || x.t) + '</a> <i style="opacity:.6">[' + esc(x.src) + ']</i></li>';
+      }).join('');
+      return '<div class="evt"><h3>' + esc(title) + ' <small style="color:var(--ink-faint);font-size:12px">' + g.length + ' 篇报道</small></h3><ul>' + lis + '</ul></div>';
+    }).join('');
+  })();
+
+  // ── 主题 ──
+  var themeBtn = document.getElementById('theme');
+  function setTheme(t) {
+    document.documentElement.dataset.theme = t;
+    try { localStorage.setItem('ainew-theme', t); } catch (e) {}
+    themeBtn.textContent = t === 'dark' ? '☀ 浅色' : '🌙 深色';
+  }
+  themeBtn.addEventListener('click', function () {
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
+  var saved = null;
+  try { saved = localStorage.getItem('ainew-theme'); } catch (e) {}
+  if (saved) setTheme(saved);
+</script>
+</body>
+</html>

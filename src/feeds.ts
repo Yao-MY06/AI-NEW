@@ -1,5 +1,7 @@
 import Parser from 'rss-parser';
-import { FEEDS, SETTINGS } from './config.js';
+import { existsSync, readFileSync } from 'node:fs';
+import { FEEDS, FEEDS_FILE, SETTINGS } from './config.js';
+import type { FeedConfig } from './config.js';
 import { sleep, stripHtml, truncate } from './util.js';
 import type { Article, FeedResult } from './types.js';
 
@@ -59,9 +61,31 @@ function toArticles(source: string, kind: 'feed' | 'hn', items: RawItem[]): Arti
   return out;
 }
 
+/** 读取 RSS 源配置：优先 feeds.json（Web 后台维护），校验失败回退内置 FEEDS */
+export function loadFeeds(): FeedConfig[] {
+  try {
+    if (!existsSync(FEEDS_FILE)) return FEEDS;
+    const raw = JSON.parse(readFileSync(FEEDS_FILE, 'utf-8')) as Array<
+      FeedConfig & { enabled?: boolean }
+    >;
+    if (!Array.isArray(raw)) return FEEDS;
+    const enabled = raw.filter(
+      (f) => f && typeof f.url === 'string' && f.name && f.enabled !== false,
+    );
+    if (!enabled.length) return FEEDS;
+    return enabled.map((f) => ({
+      name: String(f.name),
+      url: String(f.url),
+      kind: f.kind === 'hn' ? ('hn' as const) : ('feed' as const),
+    }));
+  } catch {
+    return FEEDS;
+  }
+}
+
 export async function fetchAllFeeds(): Promise<FeedResult[]> {
   return Promise.all(
-    FEEDS.map(async (feed): Promise<FeedResult> => {
+    loadFeeds().map(async (feed): Promise<FeedResult> => {
       try {
         const xml = await fetchXml(feed.url);
         const parsed = await parser.parseString(xml);

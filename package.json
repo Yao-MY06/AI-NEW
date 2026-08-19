@@ -8,7 +8,9 @@
     "node": ">=18.17"
   },
   "scripts": {
-    "start": "tsx src/main.ts"
+    "start": "tsx src/main.ts",
+    "admin": "tsx src/admin.ts",
+    "test": "tsx tests/smoke.ts"
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
