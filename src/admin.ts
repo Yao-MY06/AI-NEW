@@ -15,7 +15,8 @@ import {
 } from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { FEEDS, FEEDS_FILE, OUTPUT_DIR, ROOT, SETTINGS } from './config.js';
+import { FEEDS, FEEDS_FILE, OUTPUT_DIR, ROOT, SETTINGS, buildProviders } from './config.js';
+import { loadEditableSettings, saveEditableSettings, validateSettings } from './settings.js';
 
 const PORT = Number(process.env.ADMIN_PORT || 5666);
 
@@ -124,6 +125,34 @@ const server = http.createServer(async (req, res) => {
       json(res, 200, { ok: true, count: valid.length });
       return;
     }
+    if (req.method === 'GET' && url.pathname === '/api/settings') {
+      // 生效设置 + 只读的环境层信息（Key 永不回传，只回是否已配置）
+      json(res, 200, {
+        settings: loadEditableSettings(),
+        envOnly: {
+          providers: buildProviders().map((p) => ({
+            name: p.name,
+            model: p.model,
+            baseURL: p.baseURL,
+            hasKey: true,
+          })),
+          adminPort: PORT,
+        },
+      });
+      return;
+    }
+    if (req.method === 'PUT' && url.pathname === '/api/settings') {
+      const body: unknown = JSON.parse(await readBody(req));
+      const result = validateSettings(body);
+      if (!result.ok) {
+        json(res, 400, { ok: false, errors: result.errors });
+        return;
+      }
+      saveEditableSettings(result.value);
+      console.log('[admin] 已保存摘要设置 → data/settings.json');
+      json(res, 200, { ok: true });
+      return;
+    }
     if (req.method === 'GET' && url.pathname === '/api/test') {
       json(res, 200, await testFeed(url.searchParams.get('url') ?? ''));
       return;
@@ -215,13 +244,26 @@ function adminPage(): string {
   .reports a { color:var(--accent); text-decoration:none; margin-right:14px; font-size:13px; }
   .reports a:hover { text-decoration:underline; }
   .ok { color:#0a7d38; } .err { color:var(--accent); }
+  .tabbar { display:flex; gap:8px; margin-bottom:18px; }
+  .tabbtn { padding:6px 18px; font-size:13.5px; border-radius:999px; border:1px solid var(--rule); background:var(--card); color:var(--soft); cursor:pointer; }
+  .tabbtn.active { background:var(--ink); border-color:var(--ink); color:var(--paper); }
+  table.form th { width:150px; vertical-align:middle; }
+  table.form td { padding:6px 8px; }
+  input[type=number] { width:110px; padding:5px 8px; border:1px solid var(--rule); border-radius:6px; font-size:13px; font-family:inherit; background:var(--paper); color:var(--ink); }
+  .hint { color:var(--faint); font-size:12px; font-weight:400; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>AI-NEW · 管理后台</h1>
-  <div class="sub">订阅源维护 / 一键运行 / 历史报告（仅本机访问）</div>
+  <div class="sub">订阅源维护 / 摘要设置 / 一键运行 / 历史报告（仅本机访问）</div>
 
+  <div class="tabbar">
+    <button class="tabbtn active" data-tab="feeds" onclick="showTab('feeds')">订阅源</button>
+    <button class="tabbtn" data-tab="settings" onclick="showTab('settings')">摘要设置</button>
+  </div>
+
+  <div id="tab-feeds">
   <div class="card">
     <h2>RSS 订阅源</h2>
     <table id="t">
@@ -241,6 +283,34 @@ function adminPage(): string {
   <div class="card">
     <h2>历史报告</h2>
     <div class="reports" id="reports">加载中…</div>
+  </div>
+  </div>
+
+  <div id="tab-settings" style="display:none">
+  <div class="card">
+    <h2>摘要与模型参数</h2>
+    <table class="form">
+      <tr><th>模板</th><td><select id="s-template"><option value="tech">技术简报</option><option value="security">风险安全专刊</option></select></td></tr>
+      <tr><th>风格</th><td><select id="s-style"><option value="brief">精简（2~3 条要点）</option><option value="detailed">详细（4~6 条要点）</option></select></td></tr>
+      <tr><th>一句话点评</th><td><input type="checkbox" id="s-verdict"> <span class="hint">每篇摘要末尾附编辑点评</span></td></tr>
+      <tr><th>自定义人设</th><td><input type="text" id="s-persona" placeholder="留空使用模板默认人设"></td></tr>
+      <tr><th>关注关键词</th><td><input type="text" id="s-pin" placeholder="逗号分隔；命中的文章置顶并加 ★"></td></tr>
+      <tr><th>黑名单关键词</th><td><input type="text" id="s-block" placeholder="逗号分隔；命中的文章不进日报"></td></tr>
+      <tr><th>temperature</th><td><input type="number" id="s-temp" step="0.1" min="0" max="2"> <span class="hint">采样温度 0~2，默认 0.3</span></td></tr>
+      <tr><th>max_tokens（精简）</th><td><input type="number" id="s-mtb" min="100" max="8000"></td></tr>
+      <tr><th>max_tokens（详细）</th><td><input type="number" id="s-mtd" min="100" max="8000"></td></tr>
+      <tr><th>质量评审</th><td><input type="checkbox" id="s-judge"> <span class="hint">LLM-as-Judge：总结后自动为每篇摘要打质量分</span></td></tr>
+    </table>
+    <div class="row-actions">
+      <button class="primary" onclick="saveSettings()">保存设置</button>
+      <span id="smsg"></span>
+    </div>
+    <div style="color:var(--soft);font-size:12.5px;margin-top:10px">
+      · 保存写入 <code>data/settings.json</code>，下次运行日报生效；改模板/风格会使相关文章摘要缓存失效并重新总结。<br>
+      · 保存后同项环境变量（SUMMARY_* / PIN_KEYWORDS / BLOCK_KEYWORDS）不再生效。<br>
+      · API Key、模型、BaseURL、代理仍需在 <code>.env</code> 配置，此处不可编辑。
+    </div>
+  </div>
   </div>
 
   <div class="card">
@@ -320,11 +390,63 @@ function adminPage(): string {
         : '（暂无，先运行一次）';
     });
   }
+  // ── 摘要设置 ──
+  function showTab(name) {
+    document.querySelectorAll('.tabbtn').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.tab === name);
+    });
+    document.getElementById('tab-feeds').style.display = name === 'feeds' ? '' : 'none';
+    document.getElementById('tab-settings').style.display = name === 'settings' ? '' : 'none';
+  }
+  var $ = function (id) { return document.getElementById(id); };
+  function loadSettings() {
+    fetch('/api/settings').then(function (r) { return r.json(); }).then(function (d) {
+      var s = d.settings.summary;
+      $('s-template').value = s.templateId;
+      $('s-style').value = s.style;
+      $('s-verdict').checked = s.verdict;
+      $('s-persona').value = s.personaOverride || '';
+      $('s-pin').value = s.pinKeywords.join(',');
+      $('s-block').value = s.blockKeywords.join(',');
+      $('s-temp').value = s.temperature;
+      $('s-mtb').value = s.maxTokensBrief;
+      $('s-mtd').value = s.maxTokensDetailed;
+      $('s-judge').checked = d.settings.judge.enabled;
+    });
+  }
+  function saveSettings() {
+    var splitKw = function (v) {
+      return v.split(/[,，]/).map(function (x) { return x.trim(); }).filter(Boolean);
+    };
+    var body = {
+      summary: {
+        templateId: $('s-template').value,
+        style: $('s-style').value,
+        verdict: $('s-verdict').checked,
+        personaOverride: $('s-persona').value,
+        pinKeywords: splitKw($('s-pin').value),
+        blockKeywords: splitKw($('s-block').value),
+        temperature: Number($('s-temp').value),
+        maxTokensBrief: Number($('s-mtb').value),
+        maxTokensDetailed: Number($('s-mtd').value),
+      },
+      judge: { enabled: $('s-judge').checked },
+    };
+    fetch('/api/settings', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        $('smsg').innerHTML = d.ok
+          ? '<span class="ok">已保存 ✓</span>'
+          : '<span class="err">' + d.errors.join('；') + '</span>';
+      });
+  }
+
   fetch('/api/feeds').then(function (r) { return r.json(); }).then(function (feeds) {
     tbody.innerHTML = '';
     feeds.forEach(addRow);
   });
   loadReports();
+  loadSettings();
 </script>
 </body>
 </html>

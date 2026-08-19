@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { config as loadDotenv } from 'dotenv';
+import { readSettingsFile } from './settings.js';
 
 /** 项目根目录（不受运行时 cwd 影响） */
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -9,8 +10,6 @@ export const CACHE_FILE = path.join(ROOT, '.cache.json');
 /** 持久化数据目录（SQLite 库 + 可编辑设置），Docker 部署时挂载为卷 */
 export const DATA_DIR = path.join(ROOT, 'data');
 export const DB_FILE = process.env.AINEW_DB || path.join(DATA_DIR, 'ainew.db');
-/** Web 后台可写的运行时设置（模板/关键词/采样参数），见 src/settings.ts */
-export const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 /** RSS 源的持久化配置（Web 后台可改），不存在时回退到内置 FEEDS */
 export const FEEDS_FILE = path.join(ROOT, 'feeds.json');
 
@@ -145,25 +144,43 @@ export interface SummaryConf {
   templateId: string;
   label: string;
   persona: string;
+  /** admin 设置的自定义人设（覆盖模板默认），未设置为 undefined */
+  personaOverride?: string;
   style: 'brief' | 'detailed';
   verdict: boolean;
   pinKeywords: string[];
   blockKeywords: string[];
+  /** 采样参数（admin 可调，并入摘要缓存版本） */
+  temperature: number;
+  maxTokensBrief: number;
+  maxTokensDetailed: number;
 }
 
+/**
+ * 生效摘要配置，三层合并：data/settings.json（admin 写）> 环境变量 > 内置默认。
+ * 保存过 settings.json 后，其中已保存的项不再读环境变量。
+ */
 export const SUMMARY: SummaryConf = (() => {
-  const id = (process.env.SUMMARY_TEMPLATE || 'tech').toLowerCase();
+  const st = readSettingsFile(); // null = 文件不存在（或损坏已告警），env 层生效
+  const id = (st?.summary.templateId ?? process.env.SUMMARY_TEMPLATE ?? 'tech').toLowerCase();
   const base = TEMPLATES[id] ?? TECH_TEMPLATE;
   return {
     templateId: base.id,
     label: base.label,
     persona: base.persona,
-    style: process.env.SUMMARY_STYLE === 'detailed' ? 'detailed' : 'brief',
-    verdict: (process.env.SUMMARY_VERDICT ?? 'true') !== 'false',
-    pinKeywords: csvEnv('PIN_KEYWORDS') ?? base.pinKeywords,
-    blockKeywords: csvEnv('BLOCK_KEYWORDS') ?? base.blockKeywords,
+    personaOverride: st?.summary.personaOverride || undefined,
+    style: st?.summary.style ?? (process.env.SUMMARY_STYLE === 'detailed' ? 'detailed' : 'brief'),
+    verdict: st ? st.summary.verdict : (process.env.SUMMARY_VERDICT ?? 'true') !== 'false',
+    pinKeywords: st ? st.summary.pinKeywords : (csvEnv('PIN_KEYWORDS') ?? base.pinKeywords),
+    blockKeywords: st ? st.summary.blockKeywords : (csvEnv('BLOCK_KEYWORDS') ?? base.blockKeywords),
+    temperature: st?.summary.temperature ?? 0.3,
+    maxTokensBrief: st?.summary.maxTokensBrief ?? 600,
+    maxTokensDetailed: st?.summary.maxTokensDetailed ?? 900,
   };
 })();
+
+/** 质量评审（LLM-as-Judge）开关：settings.json 的 judge.enabled，默认开 */
+export const JUDGE = { enabled: readSettingsFile()?.judge.enabled ?? true };
 
 // ===== 模型候选（主模型 + 备用，按序故障转移）=====
 

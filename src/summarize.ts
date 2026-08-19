@@ -97,8 +97,8 @@ async function callProvider(p: Provider, system: string, user: string): Promise<
   const t0 = Date.now();
   const res = await p.client.chat.completions.create({
     model: p.model,
-    temperature: 0.3,
-    max_tokens: SUMMARY.style === 'detailed' ? 900 : 600,
+    temperature: SUMMARY.temperature,
+    max_tokens: SUMMARY.style === 'detailed' ? SUMMARY.maxTokensDetailed : SUMMARY.maxTokensBrief,
     messages: [
       { role: 'system', content: system },
       { role: 'user', content: user },

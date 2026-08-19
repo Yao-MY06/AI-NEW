@@ -1,227 +1,19 @@
 {
  "2026-08-19": {
   "date": "2026-08-19",
-  "total": 43,
-  "ok": 43,
+  "total": 14,
+  "ok": 14,
   "failed": 0,
   "bySource": {
-   "Hacker News": 29,
    "TechCrunch AI": 7,
    "The Verge AI": 7
   },
   "byCategory": {
-   "其他": 2,
-   "产品应用": 17,
-   "开源项目": 3,
-   "行业融资": 5,
-   "安全风险": 11,
-   "硬件芯片": 3,
-   "大模型": 2
+   "产品应用": 6,
+   "安全风险": 7,
+   "行业融资": 1
   },
   "items": [
-   {
-    "t": "Excited and exhausted: life as a tech writer in the AI age",
-    "zh": "激情与疲惫：AI时代科技记者的生活",
-    "cat": "其他",
-    "src": "Hacker News",
-    "link": "https://elizabethtai.com/2026/08/19/life-as-a-techwriter-in-the-ai-age/"
-   },
-   {
-    "t": "200B Tokens Later: A Month of Letting AI Agents Decompile MW2",
-    "zh": "200亿词元后：用Claude Max逆向工程《使命召唤：现代战争2》一个月",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://momo5502.com/posts/2026-08-17-mw2-decompilation/"
-   },
-   {
-    "t": "Does AI stop children from learning?",
-    "zh": "AI是否会阻止儿童学习？",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://www.economist.com/graphic-detail/2026/08/18/does-ai-stop-children-from-learning"
-   },
-   {
-    "t": "Designing AI with character: what we learned building Berd",
-    "zh": "设计具有性格的AI：构建Berd的所学",
-    "cat": "开源项目",
-    "src": "Hacker News",
-    "link": "https://block.xyz/inside/designing-ai-with-character-what-we-learned-building-berd"
-   },
-   {
-    "t": "Get feedback on your AI slop. no accounts",
-    "zh": "Slop 或 NotStrangers 评估 AI 应用，并给出原因",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://slopornot.simplicated.dev"
-   },
-   {
-    "t": "AI Stock Research Assistant · Streamlit",
-    "zh": "AI 股票研究助手 · Streamlit",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://ai-stock-research-kiaan.streamlit.app"
-   },
-   {
-    "t": "Looking for an ArXiv Endorser – AI / Computer Science",
-    "zh": "寻找 ArXiv 推荐者 – AI / 计算机科学",
-    "cat": "开源项目",
-    "src": "Hacker News",
-    "link": "https://github.com/paibyun9/EGA-V9"
-   },
-   {
-    "t": "AI mines 500 years of Spanish colonial records to find hidden wrecks, lost cargo",
-    "zh": "AI挖掘500年西班牙殖民记录寻找隐藏沉船和失落货物",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://www.tomshardware.com/tech-industry/artificial-intelligence/ai-company-hiring-a-literal-pirate-to-salvage-sunken-treasure-found-by-artificial-intelligence-pays-up-to-usd500k-a-year-mining-80-million-pages-of-spanish-colonial-records-to-find-undiscovered-wrecks-and-lost-cargo"
-   },
-   {
-    "t": "Show HN: 4bit bridge between AI and humans",
-    "zh": "Show HN: 4bit bridge between AI and humans",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://github.com/YOalphabet/YOalphabet"
-   },
-   {
-    "t": "Ask HN: Are AI credits too locked to individual applications?",
-    "zh": "Ask HN：AI 信用额度是否过于锁定于单个应用？",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://news.ycombinator.com/item?id=49356667"
-   },
-   {
-    "t": "Model Hypnosis: Strong control of AI via additive subliminal effects",
-    "zh": "Model Hypnosis: 强控AI通过添加潜意识效应",
-    "cat": "安全风险",
-    "src": "Hacker News",
-    "link": "https://arxiv.org/abs/2608.16834"
-   },
-   {
-    "t": "Show HN: PlugClaw – Private AI agent hardware for any phone or PC",
-    "zh": "Show HN: PlugClaw – 私有AI智能体硬件，适用于任何手机或PC",
-    "cat": "硬件芯片",
-    "src": "Hacker News",
-    "link": "https://plugos.net/plugclaw/"
-   },
-   {
-    "t": "Mathematics in the Age of AI",
-    "zh": "Mathematics in the Age of AI",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://arxiv.org/abs/2608.16753"
-   },
-   {
-    "t": "SERP Lens – an AI agent that does SEO work in a real browser",
-    "zh": "SERP Lens – 一款在真实浏览器中执行SEO工作的AI智能体",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://serplens.com"
-   },
-   {
-    "t": "Explaining AI agents is like explaining 3D printers",
-    "zh": "Explaining AI agents is like explaining 3D printers",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://www.jitbit.com/alexblog/ai-agents-and-3d-printers/"
-   },
-   {
-    "t": "Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere",
-    "zh": "Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://github.com/elin66alpha/Relay"
-   },
-   {
-    "t": "The Recursive Economy: AI Self-Improvement and Scarcity",
-    "zh": "The Recursive Economy: AI 自我提升与稀缺性",
-    "cat": "大模型",
-    "src": "Hacker News",
-    "link": "https://recursive-economy.pages.dev/"
-   },
-   {
-    "t": "Agent2Agent (A2A) joins Agentic AI Foundation (AAIF)'s open agentic stack",
-    "zh": "Agent2Agent (A2A) 加入 Agentic AI Foundation (AAIF) 的开源智能体堆栈",
-    "cat": "开源项目",
-    "src": "Hacker News",
-    "link": "https://aaif.io/blog/a2a-joins-aaif"
-   },
-   {
-    "t": "Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?",
-    "zh": "Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://jamanetwork.com/journals/jama/fullarticle/2852952?guestAccessKey=562af865-a038-4425-993f-ff25e5e3a130"
-   },
-   {
-    "t": "Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds",
-    "zh": "Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://warpdd.com"
-   },
-   {
-    "t": "The End-State Fallacy: Where Is AI Security Headed?",
-    "zh": "The End-State Fallacy: Where Is AI Security Headed?",
-    "cat": "安全风险",
-    "src": "Hacker News",
-    "link": "https://endstatefallacy.com/"
-   },
-   {
-    "t": "Sutton and Javed: Why AI Models Stop Learning, and How to Start It Again [video]",
-    "zh": "Sutton and Javed：为何AI模型停止学习，以及如何重新启动学习[视频]",
-    "cat": "大模型",
-    "src": "Hacker News",
-    "link": "https://www.youtube.com/watch?v=xH7U7w9Qzlo"
-   },
-   {
-    "t": "She told no one about her agony except ChatGPT. What her death reveals about AI",
-    "zh": "她对ChatGPT倾诉痛苦，却无人知晓——Sophie Rottenberg之死揭示的AI风险",
-    "cat": "安全风险",
-    "src": "Hacker News",
-    "link": "https://www.npr.org/2026/08/18/nx-s1-5929575/ai-suicide-risks-mental-health"
-   },
-   {
-    "t": "Follow-Up Thoughts on Watermarking Schemes for AI-Generated Text",
-    "zh": "Anthropic Claude 文本水印方案的后续思考",
-    "cat": "安全风险",
-    "src": "Hacker News",
-    "link": "https://daringfireball.net/2026/08/follow-up_thoughts_on_watermarking"
-   },
-   {
-    "t": "SecIT Bench A frontier benchmark for AI agents in IT and security workflows",
-    "zh": "SecIT Bench：IT和安全工作流程中AI智能体的前沿基准测试",
-    "cat": "其他",
-    "src": "Hacker News",
-    "link": "https://secitbench.cribl.io/"
-   },
-   {
-    "t": "Show HN: Monity.ai – Get notified when any website changes",
-    "zh": "Monity.ai – 获取任何网站变更通知",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://apps.apple.com/pl/app/monity-ai/id6761957823"
-   },
-   {
-    "t": "How to tame AI's voracious appetite for energy",
-    "zh": "如何驯服人工智能对能源的贪婪需求",
-    "cat": "硬件芯片",
-    "src": "Hacker News",
-    "link": "https://knowablemagazine.org/content/article/technology/2026/lowering-energy-use-artificial-intelligence-datacenters"
-   },
-   {
-    "t": "Cerebras CS-4 rack systems juice chips for every last drop of AI performance",
-    "zh": "Cerebras CS-4 机架系统榨取芯片每一滴 AI 性能",
-    "cat": "硬件芯片",
-    "src": "Hacker News",
-    "link": "https://www.theregister.com/systems/2026/08/19/cerebras-cs-4-rack-systems-juice-chips-for-every-last-drop-of-ai-performance/5289286"
-   },
-   {
-    "t": "Ask HN: How should I price an AI infrastructure platform?",
-    "zh": "如何定价AI基础设施平台？",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://news.ycombinator.com/item?id=49354254"
-   },
    {
     "t": "Cursor capitalizes on GitHub frustration, launches rival hosting platform",
     "zh": "Cursor 利用 GitHub 愤怒，推出竞争性托管平台",
@@ -321,6 +113,6 @@
     "link": "https://www.theverge.com/tech/981326/apple-airpods-with-cameras-demo-video-leak"
    }
   ],
-  "ts": 1787122562335
+  "ts": 1787123188318
  }
 }
