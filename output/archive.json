@@ -2,36 +2,134 @@
  "2026-08-19": {
   "date": "2026-08-19",
   "total": 43,
-  "ok": 42,
-  "failed": 1,
+  "ok": 43,
+  "failed": 0,
   "bySource": {
    "Hacker News": 29,
    "TechCrunch AI": 7,
    "The Verge AI": 7
   },
   "byCategory": {
-   "产品应用": 16,
-   "安全风险": 12,
-   "大模型": 2,
-   "开源项目": 3,
-   "行业融资": 6,
    "其他": 2,
-   "硬件芯片": 2
+   "产品应用": 17,
+   "开源项目": 3,
+   "行业融资": 5,
+   "安全风险": 11,
+   "硬件芯片": 3,
+   "大模型": 2
   },
   "items": [
+   {
+    "t": "Excited and exhausted: life as a tech writer in the AI age",
+    "zh": "激情与疲惫：AI时代科技记者的生活",
+    "cat": "其他",
+    "src": "Hacker News",
+    "link": "https://elizabethtai.com/2026/08/19/life-as-a-techwriter-in-the-ai-age/"
+   },
+   {
+    "t": "200B Tokens Later: A Month of Letting AI Agents Decompile MW2",
+    "zh": "200亿词元后：用Claude Max逆向工程《使命召唤：现代战争2》一个月",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://momo5502.com/posts/2026-08-17-mw2-decompilation/"
+   },
+   {
+    "t": "Does AI stop children from learning?",
+    "zh": "AI是否会阻止儿童学习？",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://www.economist.com/graphic-detail/2026/08/18/does-ai-stop-children-from-learning"
+   },
+   {
+    "t": "Designing AI with character: what we learned building Berd",
+    "zh": "设计具有性格的AI：构建Berd的所学",
+    "cat": "开源项目",
+    "src": "Hacker News",
+    "link": "https://block.xyz/inside/designing-ai-with-character-what-we-learned-building-berd"
+   },
+   {
+    "t": "Get feedback on your AI slop. no accounts",
+    "zh": "Slop 或 NotStrangers 评估 AI 应用，并给出原因",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://slopornot.simplicated.dev"
+   },
+   {
+    "t": "AI Stock Research Assistant · Streamlit",
+    "zh": "AI 股票研究助手 · Streamlit",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://ai-stock-research-kiaan.streamlit.app"
+   },
+   {
+    "t": "Looking for an ArXiv Endorser – AI / Computer Science",
+    "zh": "寻找 ArXiv 推荐者 – AI / 计算机科学",
+    "cat": "开源项目",
+    "src": "Hacker News",
+    "link": "https://github.com/paibyun9/EGA-V9"
+   },
+   {
+    "t": "AI mines 500 years of Spanish colonial records to find hidden wrecks, lost cargo",
+    "zh": "AI挖掘500年西班牙殖民记录寻找隐藏沉船和失落货物",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://www.tomshardware.com/tech-industry/artificial-intelligence/ai-company-hiring-a-literal-pirate-to-salvage-sunken-treasure-found-by-artificial-intelligence-pays-up-to-usd500k-a-year-mining-80-million-pages-of-spanish-colonial-records-to-find-undiscovered-wrecks-and-lost-cargo"
+   },
+   {
+    "t": "Show HN: 4bit bridge between AI and humans",
+    "zh": "Show HN: 4bit bridge between AI and humans",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://github.com/YOalphabet/YOalphabet"
+   },
+   {
+    "t": "Ask HN: Are AI credits too locked to individual applications?",
+    "zh": "Ask HN：AI 信用额度是否过于锁定于单个应用？",
+    "cat": "行业融资",
+    "src": "Hacker News",
+    "link": "https://news.ycombinator.com/item?id=49356667"
+   },
+   {
+    "t": "Model Hypnosis: Strong control of AI via additive subliminal effects",
+    "zh": "Model Hypnosis: 强控AI通过添加潜意识效应",
+    "cat": "安全风险",
+    "src": "Hacker News",
+    "link": "https://arxiv.org/abs/2608.16834"
+   },
+   {
+    "t": "Show HN: PlugClaw – Private AI agent hardware for any phone or PC",
+    "zh": "Show HN: PlugClaw – 私有AI智能体硬件，适用于任何手机或PC",
+    "cat": "硬件芯片",
+    "src": "Hacker News",
+    "link": "https://plugos.net/plugclaw/"
+   },
+   {
+    "t": "Mathematics in the Age of AI",
+    "zh": "Mathematics in the Age of AI",
+    "cat": "行业融资",
+    "src": "Hacker News",
+    "link": "https://arxiv.org/abs/2608.16753"
+   },
+   {
+    "t": "SERP Lens – an AI agent that does SEO work in a real browser",
+    "zh": "SERP Lens – 一款在真实浏览器中执行SEO工作的AI智能体",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://serplens.com"
+   },
+   {
+    "t": "Explaining AI agents is like explaining 3D printers",
+    "zh": "Explaining AI agents is like explaining 3D printers",
+    "cat": "产品应用",
+    "src": "Hacker News",
+    "link": "https://www.jitbit.com/alexblog/ai-agents-and-3d-printers/"
+   },
    {
     "t": "Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere",
     "zh": "Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere",
     "cat": "产品应用",
     "src": "Hacker News",
     "link": "https://github.com/elin66alpha/Relay"
-   },
-   {
-    "t": "Ask HN: Is there any evidence of a frontier AI model being nerfed after release?",
-    "zh": "Ask HN：发布后是否存在对前沿AI模型进行降级的证据？",
-    "cat": "安全风险",
-    "src": "Hacker News",
-    "link": "https://news.ycombinator.com/item?id=49356287"
    },
    {
     "t": "The Recursive Economy: AI Self-Improvement and Scarcity",
@@ -125,108 +223,11 @@
     "link": "https://news.ycombinator.com/item?id=49354254"
    },
    {
-    "t": "Unitree Robotics IPO: \"Embodied AI\" Valuation Bubble?",
-    "cat": "其他",
-    "src": "Hacker News",
-    "link": "https://www.cnn.com/2026/08/18/tech/china-unitree-ipo-intl-hnk"
-   },
-   {
-    "t": "My AI Agents Ship Code While I Sleep. Nobody Reviews It",
-    "zh": "My AI Agents Ship Code While I Sleep. Nobody Reviews It",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://goatsquadstudios.com/blog/how-i-work-with-ai-agents-autonomously"
-   },
-   {
-    "t": "Show HN: Maritime, a platform for running AI agents for $1 a month",
-    "zh": "Show HN: Maritime，每月1美元运行AI智能体的平台",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://maritime.sh"
-   },
-   {
-    "t": "AI-drafted bills are swamping the House office that writes US laws",
-    "zh": "AI起草的法案淹没美国立法办公室",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://gizmodo.com/its-absolutely-terrifying-ai-is-reportedly-slopping-up-the-bills-in-congress-2000799734"
-   },
-   {
     "t": "Cursor capitalizes on GitHub frustration, launches rival hosting platform",
     "zh": "Cursor 利用 GitHub 愤怒，推出竞争性托管平台",
     "cat": "产品应用",
     "src": "TechCrunch AI",
     "link": "https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/"
-   },
-   {
-    "t": "Tail: A 0–5 scale for how much AI wrote this",
-    "zh": "Tail: 一种0-5级的AI创作贡献度标签",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://beaucronin.com/tail/"
-   },
-   {
-    "t": "AI usage patterns in software teams",
-    "zh": "Linear软件团队AI使用模式分析",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://linear.app/data"
-   },
-   {
-    "t": "Silicon Valley's AI boom is remaking American charity",
-    "zh": "硅谷AI热潮重塑美国慈善事业",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://www.economist.com/international/2026/08/13/silicon-valleys-ai-boom-is-remaking-american-charity"
-   },
-   {
-    "t": "Show HN: HashNotch – Premium AI Integrated Dynamic Island for the Mac OS",
-    "zh": "Show HN: HashNotch – 专为Mac OS打造的顶级AI集成动态岛",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://news.ycombinator.com/item?id=49353148"
-   },
-   {
-    "t": "Google Moves A2A Under Agentic AI Foundation",
-    "zh": "Google 将 A2A 协议移至 Agentic AI 基金会",
-    "cat": "行业融资",
-    "src": "Hacker News",
-    "link": "https://techstrong.ai/articles/google-moves-a2a-under-agentic-ai-foundation/"
-   },
-   {
-    "t": "Show HN: ChatOSS – A Codex alternative for Open Source AI built on Ollama",
-    "zh": "Show HN: ChatOSS – 开源AI的Codex替代方案，基于Ollama构建",
-    "cat": "开源项目",
-    "src": "Hacker News",
-    "link": "https://chatoss.ai"
-   },
-   {
-    "t": "Fact check: How do I spot AI-generated images?",
-    "zh": "如何识别AI生成的图像？",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://www.dw.com/en/fact-check-how-do-i-spot-ai-generated-images/a-65252602"
-   },
-   {
-    "t": "AI detection tools are proliferating. Here's why they won't last.",
-    "zh": "AI检测工具激增，但它们不会持久",
-    "cat": "安全风险",
-    "src": "Hacker News",
-    "link": "https://www.washingtonpost.com/opinions/2026/08/18/ai-detection-tools-are-proliferating-here-why-they-wont-last/"
-   },
-   {
-    "t": "Has any one ever used Strands – the AI Agent SDK by AWS",
-    "zh": "AWS Strands – AI Agent SDK开源工具包",
-    "cat": "开源项目",
-    "src": "Hacker News",
-    "link": "https://strandsagents.com/"
-   },
-   {
-    "t": "Blind Egyptian entrepreneur's AI app helps others 'see' the world",
-    "zh": "盲人埃及企业家开发的AI应用帮助他人“看见”世界",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://www.reuters.com/world/middle-east/blind-egyptian-entrepreneurs-ai-app-helps-others-see-world-2026-08-18/"
    },
    {
     "t": "Robin Williams’ Instagram account brought back to fight ‘AI abuse’",
@@ -320,6 +321,6 @@
     "link": "https://www.theverge.com/tech/981326/apple-airpods-with-cameras-demo-video-leak"
    }
   ],
-  "ts": 1787110307837
+  "ts": 1787122254841
  }
 }

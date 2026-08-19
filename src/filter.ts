@@ -1,26 +1,44 @@
 import { SETTINGS } from './config.js';
+import { normalizeUrl } from './util.js';
 import type { Article } from './types.js';
 
-/** 归一化链接用于去重：去锚点/追踪参数，统一主机大小写与末尾斜杠 */
-function normalizeUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    for (const k of [...u.searchParams.keys()]) {
-      if (/^(utm_|ref$|ref_|source$|mc_)/i.test(k)) u.searchParams.delete(k);
-    }
-    u.hash = '';
-    u.host = u.host.toLowerCase();
-    if (u.pathname.length > 1 && u.pathname.endsWith('/')) u.pathname = u.pathname.slice(0, -1);
-    return u.toString();
-  } catch {
-    return url;
-  }
-}
+// 兼容旧引用：normalizeUrl 已上移到 util.ts（供 db 层复用）
+export { normalizeUrl };
 
 const STOP_WORDS = new Set([
-  'the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'with', 'and', 'or', 'its', 'is', 'are',
-  'as', 'at', 'by', 'from', 'how', 'why', 'what', 'when', 'new', 'vs', 'using', 'after',
-  'before', 'your', 'you', 'their', 'this', 'that', 'about',
+  'the',
+  'a',
+  'an',
+  'of',
+  'to',
+  'in',
+  'on',
+  'for',
+  'with',
+  'and',
+  'or',
+  'its',
+  'is',
+  'are',
+  'as',
+  'at',
+  'by',
+  'from',
+  'how',
+  'why',
+  'what',
+  'when',
+  'new',
+  'vs',
+  'using',
+  'after',
+  'before',
+  'your',
+  'you',
+  'their',
+  'this',
+  'that',
+  'about',
 ]);
 
 /** 标题分词（小写、去标点、去停用词），用于同题相似度判断 */
@@ -92,9 +110,12 @@ export function processArticles(
     const tokens = titleTokens(a.title);
     let merged = false;
     for (let i = 0; i < accepted.length; i++) {
-      if (jaccard(tokens, acceptedTokens[i]) >= SETTINGS.titleMergeThreshold) {
-        if (a.source !== accepted[i].source) {
-          const list = (accepted[i].alsoReportedBy ??= []);
+      const kept = accepted[i];
+      const keptTokens = acceptedTokens[i];
+      if (!kept || !keptTokens) continue;
+      if (jaccard(tokens, keptTokens) >= SETTINGS.titleMergeThreshold) {
+        if (a.source !== kept.source) {
+          const list = (kept.alsoReportedBy ??= []);
           if (!list.includes(a.source)) list.push(a.source);
         }
         titleMerged++;

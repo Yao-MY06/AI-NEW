@@ -23,6 +23,22 @@ function decodeCodePoint(n: number): string {
   return Number.isInteger(n) && n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : '';
 }
 
+/** 归一化链接用于去重与入库唯一键：去锚点/追踪参数，统一主机大小写与末尾斜杠 */
+export function normalizeUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    for (const k of [...u.searchParams.keys()]) {
+      if (/^(utm_|ref$|ref_|source$|mc_)/i.test(k)) u.searchParams.delete(k);
+    }
+    u.hash = '';
+    u.host = u.host.toLowerCase();
+    if (u.pathname.length > 1 && u.pathname.endsWith('/')) u.pathname = u.pathname.slice(0, -1);
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 /** 去除 HTML 标签并解码实体（数字与常见命名实体；&amp; 最后解码以保证转义正确） */
 export function stripHtml(html: string): string {
   return html
@@ -54,7 +70,8 @@ export async function pool<T, R>(
     while (true) {
       const i = next++;
       if (i >= items.length) return;
-      results[i] = await fn(items[i], i);
+      // 索引已由长度检查保证有效（noUncheckedIndexedAccess 无法感知）
+      results[i] = await fn(items[i] as T, i);
     }
   };
   await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, worker));

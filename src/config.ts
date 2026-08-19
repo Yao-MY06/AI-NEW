@@ -53,16 +53,34 @@ export const SETTINGS = {
 
 /** 文章分类固定列表（模型总结时从中选择，日报按此分栏） */
 export const CATEGORIES = [
-  '大模型', '安全风险', '硬件芯片', '行业融资', '政策监管', '开源项目', '产品应用', '其他',
+  '大模型',
+  '安全风险',
+  '硬件芯片',
+  '行业融资',
+  '政策监管',
+  '开源项目',
+  '产品应用',
+  '其他',
 ] as const;
 
 /** 中英术语对照，写入提示词保证翻译一致性 */
 export const GLOSSARY: [string, string][] = [
-  ['LLM', '大模型'], ['inference', '推理'], ['token', '词元'], ['fine-tuning', '微调'],
-  ['AI agent', '智能体'], ['benchmark', '基准测试'], ['open source', '开源'],
-  ['multimodal', '多模态'], ['alignment', '对齐'], ['guardrail', '护栏'],
-  ['context window', '上下文窗口'], ['hallucination', '幻觉'], ['quantization', '量化'],
-  ['distillation', '蒸馏'], ['open weights', '开放权重'], ['reasoning model', '推理模型'],
+  ['LLM', '大模型'],
+  ['inference', '推理'],
+  ['token', '词元'],
+  ['fine-tuning', '微调'],
+  ['AI agent', '智能体'],
+  ['benchmark', '基准测试'],
+  ['open source', '开源'],
+  ['multimodal', '多模态'],
+  ['alignment', '对齐'],
+  ['guardrail', '护栏'],
+  ['context window', '上下文窗口'],
+  ['hallucination', '幻觉'],
+  ['quantization', '量化'],
+  ['distillation', '蒸馏'],
+  ['open weights', '开放权重'],
+  ['reasoning model', '推理模型'],
 ];
 
 // ===== 摘要模板 =====
@@ -75,21 +93,34 @@ export interface SummaryTemplateConf {
   blockKeywords: string[];
 }
 
-const TEMPLATES: Record<string, SummaryTemplateConf> = {
-  tech: {
-    id: 'tech',
-    label: '技术简报',
-    persona: '你是资深科技新闻编辑',
-    pinKeywords: [],
-    blockKeywords: [],
-  },
+const TECH_TEMPLATE: SummaryTemplateConf = {
+  id: 'tech',
+  label: '技术简报',
+  persona: '你是资深科技新闻编辑',
+  pinKeywords: [],
+  blockKeywords: [],
+};
+
+export const TEMPLATES: Record<string, SummaryTemplateConf> = {
+  tech: TECH_TEMPLATE,
   security: {
     id: 'security',
     label: '风险安全专刊',
     persona: '你是资深安全研究员，评估新闻时突出威胁面、影响范围与处置建议',
     pinKeywords: [
-      '漏洞', '攻击', '泄露', '安全', '入侵',
-      'breach', 'vulnerability', 'cve', 'exploit', 'malware', 'ransomware', 'phishing', 'backdoor',
+      '漏洞',
+      '攻击',
+      '泄露',
+      '安全',
+      '入侵',
+      'breach',
+      'vulnerability',
+      'cve',
+      'exploit',
+      'malware',
+      'ransomware',
+      'phishing',
+      'backdoor',
     ],
     blockKeywords: [],
   },
@@ -99,7 +130,10 @@ const TEMPLATES: Record<string, SummaryTemplateConf> = {
 function csvEnv(name: string): string[] | undefined {
   const v = process.env[name];
   if (!v || !v.trim()) return undefined;
-  return v.split(/[,，]/).map((s) => s.trim()).filter(Boolean);
+  return v
+    .split(/[,，]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export interface SummaryConf {
@@ -114,7 +148,7 @@ export interface SummaryConf {
 
 export const SUMMARY: SummaryConf = (() => {
   const id = (process.env.SUMMARY_TEMPLATE || 'tech').toLowerCase();
-  const base = TEMPLATES[id] ?? TEMPLATES.tech;
+  const base = TEMPLATES[id] ?? TECH_TEMPLATE;
   return {
     templateId: base.id,
     label: base.label,

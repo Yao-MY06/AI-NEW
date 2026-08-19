@@ -5,10 +5,6 @@ import { fmtDateTime, todayStr } from './util.js';
 import type { Article, FeedResult, SummaryResult } from './types.js';
 import type { SummarizeStats } from './summarize.js';
 
-interface MarkExtra {
-  pinned?: boolean;
-}
-
 function entryMd(a: Article, r: SummaryResult | undefined, no: number): string {
   const marks: string[] = [];
   if (a.pinned) marks.push('**★ 关注**');
@@ -56,15 +52,20 @@ export function renderReport(
     }）`,
   );
   if (failedFeeds.length) {
-    lines.push('>', `> ⚠ 抓取失败: ${failedFeeds.map((f) => `${f.source}（${f.error}）`).join('、')}`);
+    lines.push(
+      '>',
+      `> ⚠ 抓取失败: ${failedFeeds.map((f) => `${f.source}（${f.error}）`).join('、')}`,
+    );
   }
   lines.push('', '---', '');
 
+  // 预建 文章→结果 映射，避免 O(N²) 的 indexOf 且类型上显式容忍 undefined
+  const rOf = new Map(articles.map((a, i) => [a, results[i]] as const));
   let no = 0;
   for (const g of groupArticles(articles)) {
     lines.push(`## ${g.label}（${g.list.length} 篇）`, '');
     for (const a of g.list) {
-      lines.push(entryMd(a, results[articles.indexOf(a)], ++no), '');
+      lines.push(entryMd(a, rOf.get(a), ++no), '');
     }
   }
 
@@ -79,12 +80,16 @@ export function renderTextReport(
   stats: SummarizeStats,
 ): string {
   const lines: string[] = [];
-  lines.push(`AI 新闻日报 ${todayStr()}（模板: ${SUMMARY.label}，共 ${articles.length} 篇，总结 ${stats.ok}）`, '');
+  lines.push(
+    `AI 新闻日报 ${todayStr()}（模板: ${SUMMARY.label}，共 ${articles.length} 篇，总结 ${stats.ok}）`,
+    '',
+  );
+  const rOf = new Map(articles.map((a, i) => [a, results[i]] as const));
   let no = 0;
   for (const g of groupArticles(articles)) {
     lines.push(`━━ ${g.label}（${g.list.length}）━━`, '');
     for (const a of g.list) {
-      const r = results[articles.indexOf(a)];
+      const r = rOf.get(a);
       const zh = a.titleZh ?? a.title;
       lines.push(`${++no}. ${zh}${a.titleZh ? `（${a.title}）` : ''}`);
       lines.push(`   [${a.source}/${a.category ?? '其他'}] ${a.link}`);

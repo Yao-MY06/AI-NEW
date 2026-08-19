@@ -4,7 +4,15 @@
  * 功能：增删/启停订阅源（写入 feeds.json）、试抓某个源、一键运行日报、浏览历史报告。
  */
 import http from 'node:http';
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import {
+  closeSync,
+  existsSync,
+  mkdirSync,
+  openSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { FEEDS, FEEDS_FILE, OUTPUT_DIR, ROOT, SETTINGS } from './config.js';
@@ -52,7 +60,10 @@ async function readBody(req: http.IncomingMessage): Promise<string> {
 async function testFeed(url: string): Promise<{ ok: boolean; count?: number; error?: string }> {
   try {
     const res = await fetch(url, {
-      headers: { 'user-agent': SETTINGS.userAgent, accept: 'application/rss+xml, application/xml, */*' },
+      headers: {
+        'user-agent': SETTINGS.userAgent,
+        accept: 'application/rss+xml, application/xml, */*',
+      },
       signal: AbortSignal.timeout(SETTINGS.fetchTimeoutMs),
     });
     if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
@@ -76,7 +87,11 @@ const server = http.createServer(async (req, res) => {
       }
       const ext = path.extname(file);
       const ct =
-        ext === '.html' ? 'text/html; charset=utf-8' : ext === '.json' ? 'application/json' : 'text/plain; charset=utf-8';
+        ext === '.html'
+          ? 'text/html; charset=utf-8'
+          : ext === '.json'
+            ? 'application/json'
+            : 'text/plain; charset=utf-8';
       res.writeHead(200, { 'content-type': ct });
       res.end(readFileSync(file));
       return;
@@ -114,14 +129,38 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     if (req.method === 'POST' && url.pathname === '/api/run') {
+      // 输出写入独立日志文件（logs/run-<ts>.log），失败可回看
+      mkdirSync(path.join(ROOT, 'logs'), { recursive: true });
+      const logFile = path.join(ROOT, 'logs', `run-${Date.now()}.log`);
+      const fd = openSync(logFile, 'a');
       const child = spawn('npx', ['tsx', 'src/main.ts'], {
         cwd: ROOT,
         shell: true,
         detached: true,
-        stdio: 'ignore',
+        stdio: ['ignore', fd, fd],
       });
+      child.on('spawn', () => closeSync(fd)); // 子进程已继承句柄，父进程关闭自己的副本
+      child.on('error', () => closeSync(fd));
       child.unref();
-      json(res, 200, { ok: true, pid: child.pid });
+      json(res, 200, { ok: true, pid: child.pid, log: path.relative(ROOT, logFile) });
+      return;
+    }
+    if (req.method === 'GET' && url.pathname === '/api/run/last') {
+      // 最近一次运行的日志尾部（2KB），便于排查「立即运行」失败
+      const logsDir = path.join(ROOT, 'logs');
+      const logs = existsSync(logsDir)
+        ? readdirSync(logsDir)
+            .filter((f) => /^run-\d+\.log$/.test(f))
+            .sort()
+        : [];
+      const last = logs.at(-1);
+      if (!last) {
+        json(res, 200, { ok: true, log: null, tail: '' });
+        return;
+      }
+      const buf = readFileSync(path.join(logsDir, last));
+      const tail = buf.subarray(Math.max(0, buf.length - 2048)).toString('utf-8');
+      json(res, 200, { ok: true, log: `logs/${last}`, tail });
       return;
     }
     if (req.method === 'GET' && url.pathname === '/api/reports') {
@@ -172,6 +211,7 @@ function adminPage(): string {
   button:disabled { opacity:.5; cursor:default; }
   .row-actions { display:flex; gap:10px; align-items:center; margin-top:14px; flex-wrap:wrap; }
   #msg { font-size:12.5px; margin-left:auto; color:var(--soft); }
+  pre#runlog { display:none; margin-top:12px; padding:10px 12px; background:var(--paper); border:1px solid var(--rule); border-radius:8px; font-size:12px; line-height:1.5; white-space:pre-wrap; word-break:break-all; max-height:260px; overflow:auto; color:var(--soft); }
   .reports a { color:var(--accent); text-decoration:none; margin-right:14px; font-size:13px; }
   .reports a:hover { text-decoration:underline; }
   .ok { color:#0a7d38; } .err { color:var(--accent); }
@@ -192,8 +232,10 @@ function adminPage(): string {
       <button onclick="addRow()">＋ 添加源</button>
       <button class="primary" onclick="save()">保存配置</button>
       <button onclick="runNow()">▶ 立即运行日报</button>
+      <button onclick="showLastLog()">上次运行日志</button>
       <span id="msg"></span>
     </div>
+    <pre id="runlog"></pre>
   </div>
 
   <div class="card">
@@ -257,7 +299,19 @@ function adminPage(): string {
     say('已启动，后台运行中…', true);
     fetch('/api/run', { method: 'POST' })
       .then(function (r) { return r.json(); })
-      .then(function () { setTimeout(loadReports, 90000); });
+      .then(function (d) {
+        if (d.log) say('已启动（日志 ' + d.log + '），后台运行中…', true);
+        setTimeout(loadReports, 90000);
+      });
+  }
+  function showLastLog() {
+    fetch('/api/run/last')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var el = document.getElementById('runlog');
+        el.style.display = 'block';
+        el.textContent = d.log ? '[' + d.log + ']\n' + d.tail : '（暂无运行日志）';
+      });
   }
   function loadReports() {
     fetch('/api/reports').then(function (r) { return r.json(); }).then(function (list) {

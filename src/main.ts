@@ -1,5 +1,5 @@
 import { setupProxy } from './proxy.js';
-import { OUTPUT_DIR, SUMMARY } from './config.js';
+import { SUMMARY } from './config.js';
 import { fetchAllFeeds } from './feeds.js';
 import { processArticles } from './filter.js';
 import { summarizeAll } from './summarize.js';
@@ -55,15 +55,17 @@ async function main(): Promise<void> {
   const since = new Date(sinceMs);
   // 分类/中文标题回填到文章对象，供各渲染器使用
   results.forEach((r, i) => {
-    if (r.category) articles[i].category = r.category;
-    if (r.titleZh) articles[i].titleZh = r.titleZh;
+    const a = articles[i];
+    if (!a) return;
+    if (r.category) a.category = r.category;
+    if (r.titleZh) a.titleZh = r.titleZh;
   });
 
   const htmlFile = writeHtmlReport(renderHtmlReport(articles, results, feeds, stats, since));
   const mdFile = writeReport(renderReport(articles, results, feeds, stats, since)); // Notion 可直接导入
   const txtFile = writeTextReport(renderTextReport(articles, results, stats));
   tryPrintPdf(htmlFile);
-  const archive = updateArchive(articles, results, stats);
+  const archive = updateArchive(articles, stats);
 
   console.log(
     `\n完成: ${articles.length} 篇（总结成功 ${stats.ok}，缓存命中 ${stats.cached}，失败 ${stats.failed}）`,

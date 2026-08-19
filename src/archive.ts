@@ -1,8 +1,8 @@
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { OUTPUT_DIR } from './config.js';
 import { todayStr } from './util.js';
-import type { Article, SummaryResult } from './types.js';
+import type { Article } from './types.js';
 import type { SummarizeStats } from './summarize.js';
 
 const ARCHIVE_FILE = path.join(OUTPUT_DIR, 'archive.json');
@@ -28,15 +28,6 @@ interface DayEntry {
 
 type Archive = Record<string, DayEntry>;
 
-function esc(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 function loadArchive(): Archive {
   try {
     if (!existsSync(ARCHIVE_FILE)) return {};
@@ -46,10 +37,17 @@ function loadArchive(): Archive {
   }
 }
 
+/** JSON 安全内联到 <script>：转义 < 与行分隔符，防止 </script> 逃逸（RSS 标题不可信） */
+export function jsonForScript(v: unknown): string {
+  return JSON.stringify(v)
+    .replace(/</g, '\\u003c')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
 /** 更新 manifest 并生成存档首页（index.html），返回写入的文件 */
 export function updateArchive(
   articles: Article[],
-  results: SummaryResult[],
   stats: SummarizeStats,
 ): { manifest: string; index: string } {
   const archive = loadArchive();
@@ -57,12 +55,11 @@ export function updateArchive(
   const bySource: Record<string, number> = {};
   const byCategory: Record<string, number> = {};
   const items: ArchiveItem[] = [];
-  articles.forEach((a, i) => {
+  articles.forEach((a) => {
     bySource[a.source] = (bySource[a.source] ?? 0) + 1;
     const cat = a.category ?? '其他';
     byCategory[cat] = (byCategory[cat] ?? 0) + 1;
     items.push({ t: a.title, zh: a.titleZh, cat, src: a.source, link: a.link });
-    void results[i];
   });
   archive[date] = {
     date,
@@ -83,7 +80,7 @@ export function updateArchive(
 /** 存档首页：按月分组的日期列表 + 全文检索 + 跨天事件时间线（客户端标题聚类） */
 function renderIndex(archive: Archive): string {
   const days = Object.values(archive).sort((a, b) => b.date.localeCompare(a.date));
-  const data = JSON.stringify(days);
+  const data = jsonForScript(days);
 
   return `<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">

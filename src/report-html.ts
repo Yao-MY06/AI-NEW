@@ -26,7 +26,10 @@ const SOURCE_COLORS: Record<string, string> = {
 
 /** 把摘要正文（"- " 列表 + **点评**: ...）解析为安全的 HTML 片段 */
 function parseSummary(raw: string): string {
-  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
+  const lines = raw
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
   const bullets: string[] = [];
   const paras: string[] = [];
   for (const line of lines) {
@@ -36,7 +39,9 @@ function parseSummary(raw: string): string {
       const m = line.match(/^\*\*(.+?)\*\*\s*[:：]?\s*(.*)$/);
       paras.push(
         m
-          ? `<p class="verdict"><span class="verdict-label">${esc(m[1])}</span>${esc(m[2])}</p>`
+          ? `<p class="verdict"><span class="verdict-label">${esc(m[1] ?? '')}</span>${esc(
+              m[2] ?? '',
+            )}</p>`
           : `<p class="plain">${esc(line)}</p>`,
       );
     }
@@ -91,9 +96,10 @@ function dashboardHtml(rs: ReportStats): string {
     const max = Math.max(...items.map((x) => x.n), 1);
     return items
       .map(
-        (x) => `<div class="bar"><span class="bar-label">${esc(x.name)}</span><span class="bar-track"><i style="width:${
-          Math.round((x.n / max) * 100)
-        }%;${color ? `background:${color(x.name)}` : ''}"></i></span><b>${x.n}</b></div>`,
+        (x) =>
+          `<div class="bar"><span class="bar-label">${esc(x.name)}</span><span class="bar-track"><i style="width:${Math.round(
+            (x.n / max) * 100,
+          )}%;${color ? `background:${color(x.name)}` : ''}"></i></span><b>${x.n}</b></div>`,
       )
       .join('');
   };
@@ -132,15 +138,19 @@ export function renderHtmlReport(
   const pinned = articles.filter((a) => a.pinned);
   if (pinned.length) sections.push({ key: '__pin', label: '★ 关注', list: pinned });
   for (const c of cats) {
-    sections.push({ key: c, label: c, list: articles.filter((a) => (a.category ?? '其他') === c && !a.pinned) });
+    sections.push({
+      key: c,
+      label: c,
+      list: articles.filter((a) => (a.category ?? '其他') === c && !a.pinned),
+    });
   }
   for (const s of sections) flatten.push(...s.list);
 
   const sectionsHtml = sections
     .map((s) => {
-      const inner = s.list
-        .map((a) => articleHtml(a, results[articles.indexOf(a)], flatten.indexOf(a)))
-        .join('\n');
+      // 预建 文章→结果 映射，避免 O(N²) 的 indexOf 且类型上显式容忍 undefined
+      const rOf = new Map(articles.map((a, i) => [a, results[i]] as const));
+      const inner = s.list.map((a) => articleHtml(a, rOf.get(a), flatten.indexOf(a))).join('\n');
       return `<section class="cat" data-cat="${esc(s.key)}">
     <h3 class="cat-h"><span>${esc(s.label)}</span><em>${s.list.length} 篇</em></h3>
 ${inner}

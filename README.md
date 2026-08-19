@@ -20,18 +20,18 @@ npx tsx src/main.ts
 
 ## 配置（.env）
 
-| 变量 | 说明 |
-|---|---|
-| `OPENAI_API_KEY` | 主模型 API Key（不填则跳过总结，仅出标题列表） |
-| `OPENAI_BASE_URL` | OpenAI 兼容接口地址，如智谱 `https://open.bigmodel.cn/api/paas/v4` |
-| `OPENAI_MODEL` | 模型名，如 `glm-4-flash`（免费）/ `deepseek-chat` / `gpt-4o-mini` |
+| 变量                            | 说明                                                                                          |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| `OPENAI_API_KEY`                | 主模型 API Key（不填则跳过总结，仅出标题列表）                                                |
+| `OPENAI_BASE_URL`               | OpenAI 兼容接口地址，如智谱 `https://open.bigmodel.cn/api/paas/v4`                            |
+| `OPENAI_MODEL`                  | 模型名，如 `glm-4-flash`（免费）/ `deepseek-chat` / `gpt-4o-mini`                             |
 | `FALLBACK_1_*` / `FALLBACK_2_*` | 备用模型（同前三项），主模型失败自动按序切换，连续失败 3 次本轮停用；本地 Ollama 也可作为候选 |
-| `SUMMARY_TEMPLATE` | `tech` 技术简报（默认）/ `security` 风险安全专刊（安全视角 + 安全类关键词自动置顶） |
-| `SUMMARY_STYLE` | `brief` 精简 2~3 条（默认）/ `detailed` 详细 4~6 条 |
-| `SUMMARY_VERDICT` | `false` 则不生成点评 |
-| `PIN_KEYWORDS` | 关注关键词（逗号分隔），命中文章置顶 + ★ 标记；中英文需分别列出 |
-| `BLOCK_KEYWORDS` | 黑名单关键词，命中文章直接过滤 |
-| `HTTPS_PROXY` | 可选网络代理 |
+| `SUMMARY_TEMPLATE`              | `tech` 技术简报（默认）/ `security` 风险安全专刊（安全视角 + 安全类关键词自动置顶）           |
+| `SUMMARY_STYLE`                 | `brief` 精简 2~~3 条（默认）/ `detailed` 详细 4~~6 条                                         |
+| `SUMMARY_VERDICT`               | `false` 则不生成点评                                                                          |
+| `PIN_KEYWORDS`                  | 关注关键词（逗号分隔），命中文章置顶 + ★ 标记；中英文需分别列出                               |
+| `BLOCK_KEYWORDS`                | 黑名单关键词，命中文章直接过滤                                                                |
+| `HTTPS_PROXY`                   | 可选网络代理                                                                                  |
 
 > 摘要缓存按模板/风格/点评配置自动失效，切换模板后会重新总结。
 

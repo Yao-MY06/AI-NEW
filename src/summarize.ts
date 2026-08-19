@@ -53,16 +53,18 @@ export function parseSummaryBlock(raw: string): ParsedSummary {
   let category: string | undefined;
   let titleZh: string | undefined;
   while (lines.length) {
-    const head = lines[0].trim();
+    const head = lines[0]?.trim() ?? '';
     const c = head.match(/^(?:分类|类别)\s*[:：]\s*(.+)$/);
     if (c) {
-      category = normalizeCategory(c[1].trim());
+      const v = c[1]?.trim();
+      if (v) category = normalizeCategory(v);
       lines.shift();
       continue;
     }
     const t = head.match(/^标题\s*[:：]\s*(.+)$/);
     if (t) {
-      titleZh = t[1].trim();
+      const v = t[1]?.trim();
+      if (v) titleZh = v;
       lines.shift();
       continue;
     }
@@ -221,9 +223,7 @@ export async function summarizeAll(
       stats: { total: articles.length, ok: 0, cached: 0, failed: articles.length, usage: {} },
     };
   }
-  console.log(
-    `[ai] 模型候选: ${providers.map((p) => `${p.name}(${p.model})`).join(' → ')}`,
-  );
+  console.log(`[ai] 模型候选: ${providers.map((p) => `${p.name}(${p.model})`).join(' → ')}`);
 
   const system = buildSystemPrompt();
   const cache = loadCache();
@@ -232,7 +232,7 @@ export async function summarizeAll(
   const results = await pool(articles, SETTINGS.summaryConcurrency, async (a) => {
     const r = await summarizeOne(providers, a, cache, system, usage);
     done++;
-    const flag = r.summary ? (r.fromCache ? '缓存' : r.servedBy ?? '完成') : `失败(${r.error})`;
+    const flag = r.summary ? (r.fromCache ? '缓存' : (r.servedBy ?? '完成')) : `失败(${r.error})`;
     console.log(`[ai] ${done}/${articles.length} ${flag} - ${a.title.slice(0, 50)}`);
     saveCache(cache); // 写穿保存，中途崩溃不丢已完成的总结
     return r;

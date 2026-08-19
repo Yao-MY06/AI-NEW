@@ -22,8 +22,9 @@ export async function fetchArticleText(url: string): Promise<string | null> {
 
     const html = await res.text();
     const { document } = parseHTML(html);
-    // linkedom 与 jsdom 的 Document 类型结构兼容，运行时可用
-    const parsed = new Readability(document as never).parse();
+    // linkedom 与 jsdom 的 Document 类型结构兼容，运行时可用；此处做受控断言
+    type ReadabilityDoc = NonNullable<ConstructorParameters<typeof Readability>[0]>;
+    const parsed = new Readability(document as unknown as ReadabilityDoc).parse();
     const text = parsed?.textContent?.replace(/\s+\n/g, '\n').trim() ?? '';
     return text ? truncate(text, SETTINGS.maxChars) : null;
   } catch {
