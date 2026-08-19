@@ -9,6 +9,7 @@ function entryMd(a: Article, r: SummaryResult | undefined, no: number): string {
   const marks: string[] = [];
   if (a.pinned) marks.push('**★ 关注**');
   if (a.alsoReportedBy?.length) marks.push(`多源报道（${a.alsoReportedBy.join('、')}）`);
+  if (a.quality !== undefined) marks.push(`★ 质量评分 ${a.quality.toFixed(1)}`);
   if (r?.usedFallbackText) marks.push('*摘要基于简介*');
   const zhTitle = a.titleZh ?? a.title;
   const orig = a.titleZh && a.titleZh !== a.title ? `\n\n*原题: ${a.title}*` : '';

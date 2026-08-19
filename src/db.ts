@@ -432,3 +432,139 @@ export function logModelCall(row: ModelCallRow, d: Database.Database = getDb()):
     Date.now(),
   );
 }
+
+// ===== 质量评分（LLM-as-Judge）与统计 =====
+
+export interface JudgeScoreRow {
+  summaryId: number;
+  articleId: number;
+  runId?: number;
+  provider: string;
+  model: string;
+  factual: number;
+  completeness: number;
+  fluency: number;
+  overall: number;
+  comment: string;
+  ver: string;
+}
+
+/** 读取某版提示词下的评分；(summary_id, ver) 唯一，缓存命中即已有评分 */
+export function getJudgeScore(
+  summaryId: number,
+  ver: string,
+  d: Database.Database = getDb(),
+): { overall: number; comment: string } | null {
+  const row = d
+    .prepare(`SELECT overall, comment FROM judge_scores WHERE summary_id = ? AND ver = ?`)
+    .get(summaryId, ver) as { overall: number; comment: string | null } | undefined;
+  if (!row) return null;
+  return { overall: row.overall, comment: row.comment ?? '' };
+}
+
+export function saveJudgeScore(row: JudgeScoreRow, d: Database.Database = getDb()): void {
+  d.prepare(
+    `INSERT OR REPLACE INTO judge_scores
+       (summary_id, article_id, run_id, provider, model, factual, completeness, fluency, overall, comment, ver, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  ).run(
+    row.summaryId,
+    row.articleId,
+    row.runId ?? null,
+    row.provider,
+    row.model,
+    row.factual,
+    row.completeness,
+    row.fluency,
+    row.overall,
+    row.comment,
+    row.ver,
+    Date.now(),
+  );
+}
+
+export interface StatsDay {
+  date: string;
+  runs: number;
+  articles: number;
+  ok: number;
+  failed: number;
+  avgQuality: number | null;
+  promptTokens: number;
+  completionTokens: number;
+}
+
+export interface StatsProvider {
+  provider: string;
+  model: string;
+  calls: number;
+  ok: number;
+  promptTokens: number;
+  completionTokens: number;
+  avgLatencyMs: number;
+}
+
+export interface StatsRun {
+  id: number;
+  startedAt: number;
+  finishedAt: number | null;
+  ok: boolean;
+  articlesKept: number;
+  summarizedOk: number;
+  summarizedFailed: number;
+  judgeOk: number;
+  promptTokens: number;
+  completionTokens: number;
+  exitError: string | null;
+}
+
+export interface StatsPayload {
+  days: StatsDay[];
+  providers: StatsProvider[];
+  recentRuns: StatsRun[];
+}
+
+/** admin 统计页聚合：按日运行概览（含质量均值）/ 供应商用量 / 最近运行 */
+export function queryStats(days = 14, d: Database.Database = getDb()): StatsPayload {
+  const cutoff = Date.now() - days * 24 * 3600 * 1000;
+  const daySql = `SELECT date(started_at / 1000, 'unixepoch', 'localtime') AS date,
+      COUNT(*) AS runs,
+      COALESCE(SUM(articles_kept), 0) AS articles,
+      COALESCE(SUM(summarized_ok), 0) AS ok,
+      COALESCE(SUM(summarized_failed), 0) AS failed,
+      COALESCE(SUM(prompt_tokens), 0) AS promptTokens,
+      COALESCE(SUM(completion_tokens), 0) AS completionTokens
+    FROM runs WHERE started_at >= ? GROUP BY date ORDER BY date DESC`;
+  const qualitySql = `SELECT date(created_at / 1000, 'unixepoch', 'localtime') AS date, AVG(overall) AS q
+    FROM judge_scores WHERE created_at >= ? GROUP BY date`;
+  const qualityByDate = new Map(
+    (d.prepare(qualitySql).all(cutoff) as { date: string; q: number }[]).map((x) => [x.date, x.q]),
+  );
+  const daysOut: StatsDay[] = (d.prepare(daySql).all(cutoff) as Omit<StatsDay, 'avgQuality'>[]).map(
+    (x) => ({ ...x, avgQuality: qualityByDate.get(x.date) ?? null }),
+  );
+
+  const providers: StatsProvider[] = d
+    .prepare(
+      `SELECT provider, model, COUNT(*) AS calls, SUM(ok) AS ok,
+         COALESCE(SUM(prompt_tokens), 0) AS promptTokens,
+         COALESCE(SUM(completion_tokens), 0) AS completionTokens,
+         CAST(COALESCE(AVG(latency_ms), 0) AS INT) AS avgLatencyMs
+       FROM model_calls WHERE called_at >= ? GROUP BY provider, model ORDER BY calls DESC`,
+    )
+    .all(cutoff) as StatsProvider[];
+
+  const recentRuns: StatsRun[] = (
+    d
+      .prepare(
+        `SELECT id, started_at AS startedAt, finished_at AS finishedAt, ok,
+           articles_kept AS articlesKept, summarized_ok AS summarizedOk,
+           summarized_failed AS summarizedFailed, judge_ok AS judgeOk,
+           prompt_tokens AS promptTokens, completion_tokens AS completionTokens, exit_error AS exitError
+         FROM runs ORDER BY id DESC LIMIT 10`,
+      )
+      .all() as (Omit<StatsRun, 'ok'> & { ok: number })[]
+  ).map((x) => ({ ...x, ok: x.ok === 1 }));
+
+  return { days: daysOut, providers, recentRuns };
+}

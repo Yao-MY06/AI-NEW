@@ -17,6 +17,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { FEEDS, FEEDS_FILE, OUTPUT_DIR, ROOT, SETTINGS, buildProviders } from './config.js';
 import { loadEditableSettings, saveEditableSettings, validateSettings } from './settings.js';
+import { queryStats } from './db.js';
 
 const PORT = Number(process.env.ADMIN_PORT || 5666);
 
@@ -153,6 +154,11 @@ const server = http.createServer(async (req, res) => {
       json(res, 200, { ok: true });
       return;
     }
+    if (req.method === 'GET' && url.pathname === '/api/stats') {
+      const days = Math.min(Math.max(Number(url.searchParams.get('days')) || 14, 1), 90);
+      json(res, 200, queryStats(days));
+      return;
+    }
     if (req.method === 'GET' && url.pathname === '/api/test') {
       json(res, 200, await testFeed(url.searchParams.get('url') ?? ''));
       return;
@@ -261,6 +267,7 @@ function adminPage(): string {
   <div class="tabbar">
     <button class="tabbtn active" data-tab="feeds" onclick="showTab('feeds')">订阅源</button>
     <button class="tabbtn" data-tab="settings" onclick="showTab('settings')">摘要设置</button>
+    <button class="tabbtn" data-tab="stats" onclick="showTab('stats')">统计</button>
   </div>
 
   <div id="tab-feeds">
@@ -310,6 +317,27 @@ function adminPage(): string {
       · 保存后同项环境变量（SUMMARY_* / PIN_KEYWORDS / BLOCK_KEYWORDS）不再生效。<br>
       · API Key、模型、BaseURL、代理仍需在 <code>.env</code> 配置，此处不可编辑。
     </div>
+  </div>
+  </div>
+
+  <div id="tab-stats" style="display:none">
+  <div class="card">
+    <h2>每日概览（近 14 天）</h2>
+    <table>
+      <thead><tr><th>日期</th><th>运行</th><th>文章</th><th>总结成功</th><th>失败</th><th>质量</th><th>tokens 入/出</th></tr></thead>
+      <tbody id="stats-days"><tr><td colspan="7">加载中…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>模型用量（近 14 天）</h2>
+    <table>
+      <thead><tr><th>供应商</th><th>模型</th><th>调用</th><th>成功</th><th>tokens 入/出</th><th>均延迟</th></tr></thead>
+      <tbody id="stats-providers"><tr><td colspan="6">加载中…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>最近运行</h2>
+    <div id="stats-runs" style="font-size:12.5px;color:var(--soft)">加载中…</div>
   </div>
   </div>
 
@@ -397,6 +425,35 @@ function adminPage(): string {
     });
     document.getElementById('tab-feeds').style.display = name === 'feeds' ? '' : 'none';
     document.getElementById('tab-settings').style.display = name === 'settings' ? '' : 'none';
+    document.getElementById('tab-stats').style.display = name === 'stats' ? '' : 'none';
+    if (name === 'stats') loadStats();
+  }
+  function fmtK(n) { return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n); }
+  function loadStats() {
+    fetch('/api/stats?days=14').then(function (r) { return r.json(); }).then(function (s) {
+      document.getElementById('stats-days').innerHTML = s.days.length
+        ? s.days.map(function (d) {
+            return '<tr><td>' + esc(d.date) + '</td><td>' + d.runs + '</td><td>' + d.articles +
+              '</td><td>' + d.ok + '</td><td>' + d.failed + '</td><td>' +
+              (d.avgQuality == null ? '—' : '★' + Number(d.avgQuality).toFixed(1)) +
+              '</td><td>' + fmtK(d.promptTokens) + ' / ' + fmtK(d.completionTokens) + '</td></tr>';
+          }).join('')
+        : '<tr><td colspan="7">（暂无数据）</td></tr>';
+      document.getElementById('stats-providers').innerHTML = s.providers.length
+        ? s.providers.map(function (p) {
+            return '<tr><td>' + esc(p.provider) + '</td><td>' + esc(p.model) + '</td><td>' + p.calls +
+              '</td><td>' + p.ok + '</td><td>' + fmtK(p.promptTokens) + ' / ' + fmtK(p.completionTokens) +
+              '</td><td>' + p.avgLatencyMs + 'ms</td></tr>';
+          }).join('')
+        : '<tr><td colspan="6">（暂无调用记录）</td></tr>';
+      document.getElementById('stats-runs').innerHTML = s.recentRuns.map(function (r) {
+        return '<div style="padding:5px 0;border-bottom:1px solid var(--rule)">' +
+          '#' + r.id + ' · ' + new Date(r.startedAt).toLocaleString() + ' · ' +
+          (r.ok ? '<span class="ok">成功</span>' : '<span class="err">失败' + (r.exitError ? '：' + esc(String(r.exitError).slice(0, 80)) : '') + '</span>') +
+          ' · 文章 ' + r.articlesKept + ' · 总结 ' + r.summarizedOk + ' · 评审 ' + r.judgeOk +
+          ' · ' + fmtK(r.promptTokens) + '/' + fmtK(r.completionTokens) + ' tokens</div>';
+      }).join('') || '（暂无运行记录）';
+    });
   }
   var $ = function (id) { return document.getElementById(id); };
   function loadSettings() {

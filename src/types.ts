@@ -17,6 +17,10 @@ export interface Article {
   titleZh?: string;
   /** 总结阶段抓取到的正文片段（用于前端预览弹窗） */
   previewText?: string;
+  /** LLM-as-Judge 综合质量分（1.0~5.0），无评分时缺省 */
+  quality?: number;
+  /** 质量短评（hover 提示） */
+  qualityComment?: string;
 }
 
 /** 单篇总结结果 */

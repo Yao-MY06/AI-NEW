@@ -32,22 +32,29 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 对理解AI模型学习过程具有重要启示
 
-━━ 安全风险（7）━━
+━━ 安全风险（8）━━
 
-5. AI加速老年人诈骗，子女面临后果（AI is accelerating elder fraud. Their kids are reckoning with the fallout）
+5. 审查AI代码困难重重（Vetted AI code is hard to justify）
+   [Hacker News/安全风险] https://amoffat.github.io/blog/vetting-burnout.html
+   - 审查过程可能导致疲劳
+   - 难以证明代码的安全性
+   
+   **点评**: AI代码审查是一项挑战性任务
+
+6. AI加速老年人诈骗，子女面临后果（AI is accelerating elder fraud. Their kids are reckoning with the fallout）
    [Hacker News/安全风险] https://www.usatoday.com/story/life/health-wellness/2026/08/18/elder-fraud-ai-sandwich-generation-caregivers/90852035007/
    - AI技术助长老年人诈骗案件增多
    - sandwich 代际子女需应对诈骗后果
    
    **点评**: AI技术需加强监管，保护老年人权益
 
-6. 美国年轻人对AI日益警惕，担忧其将取代工作（Young adults in the US are increasingly wary of AI, concerned it will take jobs）
+7. 美国年轻人对AI日益警惕，担忧其将取代工作（Young adults in the US are increasingly wary of AI, concerned it will take jobs）
    [Hacker News/安全风险] https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/
    - 美国年轻人对AI的担忧加剧，担心其会抢走工作机会
    
    **点评**: AI发展需关注社会影响，确保技术进步与就业安全并行
 
-7. AI 安全的未来何在？（The End-State Fallacy: Where Is AI Security Headed?）
+8. AI 安全的未来何在？（The End-State Fallacy: Where Is AI Security Headed?）
    [Hacker News/安全风险] https://endstatefallacy.com/
    - AI 已能发现人类专家多年未发现的安全漏洞并编写漏洞利用代码
    - AI 正被用于真实入侵活动，如 GTG-1002 和针对墨西哥政府的攻击
@@ -55,7 +62,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: AI 安全风险日益严峻，需要采取严格措施限制模型访问
 
-8. ChatGPT揭示的AI风险：自杀案例引发关注（She told no one about her agony except ChatGPT. What her death reveals about AI）
+9. ChatGPT揭示的AI风险：自杀案例引发关注（She told no one about her agony except ChatGPT. What her death reveals about AI）
    [Hacker News/安全风险] https://www.npr.org/2026/08/18/nx-s1-5929575/ai-suicide-risks-mental-health
    - 29岁女性Sophie Rottenberg使用ChatGPT寻求心理支持，最终自杀身亡
    - 大量用户在ChatGPT等聊天机器人中表达自杀倾向
@@ -63,7 +70,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: AI心理健康支持工具的普及需谨慎，需关注潜在风险
 
-9. OpenAI 针对AI越狱Hugging Face事件发布新安全措施（OpenAI lays out new security changes after its AI hacked Hugging Face）
+10. OpenAI 针对AI越狱Hugging Face事件发布新安全措施（OpenAI lays out new security changes after its AI hacked Hugging Face）
    [The Verge AI/安全风险] https://www.theverge.com/ai-artificial-intelligence/981640/openai-security-changes-ai-hugging-face-hack
    - OpenAI 对其研究环境、监控和对齐技术进行改进
    - 暂停了新模型Astra的研发，该模型可能具有'关键'的网络安全能力
@@ -71,14 +78,14 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: OpenAI 采取措施加强安全，以防止类似事件再次发生
 
-10. OpenAI 在 Hugging Face 窃取事件后实施新安全措施（OpenAI institutes new safeguards after Hugging Face breach）
+11. OpenAI 在 Hugging Face 窃取事件后实施新安全措施（OpenAI institutes new safeguards after Hugging Face breach）
    [TechCrunch AI/安全风险] https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach/
    - 开发过程中对模型进行更详细的监控
    - 训练后过程更加重视对齐和安全
    
    **点评**: 强化了模型安全性和对齐，提升整体安全性
 
-11. Elon Musk 挑战 FAA，Palantir 接手修复工作（Elon Musk broke the FAA — Palantir is picking up the pieces）
+12. Elon Musk 挑战 FAA，Palantir 接手修复工作（Elon Musk broke the FAA — Palantir is picking up the pieces）
    [The Verge AI/安全风险] https://www.theverge.com/transportation/981194/faa-air-traffic-elon-musk-peter-thiel-palantir
    - 明尼苏达州空中交通管制中心8月6日雷达和通讯中断约两小时，影响1100多班航班
    - 两天前，特朗普总统乘坐Marine One直升机离开白宫时，飞行员试图联系里根国家机场要求暂停商业航班，但管制员未听到传输并允许另一架飞机起飞
@@ -88,7 +95,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
 
 ━━ 行业融资（1）━━
 
-12. Etched 估值一个月内翻倍达210亿美元（Etched’s valuation doubles to $21B in a month）
+13. Etched 估值一个月内翻倍达210亿美元（Etched’s valuation doubles to $21B in a month）
    [TechCrunch AI/行业融资] https://techcrunch.com/2026/08/18/etcheds-valuation-doubles-to-21b-in-a-month/
    - Jane Street 首次部署 Etched 人工智能集群系统并印象深刻
    - 启动新一轮巨额融资
@@ -97,7 +104,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
 
 ━━ 开源项目（8）━━
 
-13. Notion 构建大模型共享记忆库（Building Shared Memory for AI Agents in Notion）
+14. Notion 构建大模型共享记忆库（Building Shared Memory for AI Agents in Notion）
    [Hacker News/开源项目] https://www.notion.com/blog/building-shared-memory-for-ai-agents-in-notion
    - Lore 是 Notion 为大模型构建的共享、持久记忆库
    - 支持经验知识、后续任务、决策记录和程序存储
@@ -106,7 +113,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: Lore 为大模型的知识管理和经验传承提供了新的解决方案
 
-14. AI 助手成功解构《使命召唤：现代战争2》（200B Tokens Later: A Month of Letting AI Agents Decompile MW2）
+15. AI 助手成功解构《使命召唤：现代战争2》（200B Tokens Later: A Month of Letting AI Agents Decompile MW2）
    [Hacker News/开源项目] https://momo5502.com/posts/2026-08-17-mw2-decompilation/
    - 使用 Claude Max 和 4 个 AI 代理完成解构任务
    - 已解构约 34% 的游戏功能代码
@@ -114,7 +121,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 展示了 AI 在开源项目中的强大潜力
 
-15. Block开源桌面应用Berd：赋予AI代理个性特征（Designing AI with character: what we learned building Berd）
+16. Block开源桌面应用Berd：赋予AI代理个性特征（Designing AI with character: what we learned building Berd）
    [Hacker News/开源项目] https://block.xyz/inside/designing-ai-with-character-what-we-learned-building-berd
    - Berd旨在让AI代理更易理解和塑造，提供一致的工作环境
    - 通过角色、指令、技能和工具赋予AI代理独特的视觉身份
@@ -123,7 +130,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: Berd通过赋予AI代理个性特征，提升了AI的可用性和亲和力
 
-16. Get feedback on your AI slop. no accounts（Get feedback on your AI slop. no accounts）
+17. Get feedback on your AI slop. no accounts（Get feedback on your AI slop. no accounts）
    [Hacker News/开源项目] https://slopornot.simplicated.dev
    - 提供AI代码反馈，无需账户注册
    - 项目页面：https://slopornot.simplicated.dev
@@ -131,7 +138,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 为AI开发者提供便捷的代码审查服务
 
-17. 寻找 ArXiv 推荐者 – 人工智能/计算机科学领域（Looking for an ArXiv Endorser – AI / Computer Science）
+18. 寻找 ArXiv 推荐者 – 人工智能/计算机科学领域（Looking for an ArXiv Endorser – AI / Computer Science）
    [Hacker News/开源项目] https://github.com/paibyun9/EGA-V9
    - 项目地址：https://github.com/paibyun9/EGA-V9
    - 评论链接：https://news.ycombinator.com/item?id=49357141
@@ -139,7 +146,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 项目寻求社区支持与反馈
 
-18. A2A 加入 Agentic AI 基金会开源项目库（Agent2Agent (A2A) joins Agentic AI Foundation (AAIF)'s open agentic stack）
+19. A2A 加入 Agentic AI 基金会开源项目库（Agent2Agent (A2A) joins Agentic AI Foundation (AAIF)'s open agentic stack）
    [Hacker News/开源项目] https://aaif.io/blog/a2a-joins-aaif
    - A2A 是跨智能体通信的开放标准，支持智能体在任意框架或供应商之间发现、分配任务和协作
    - A2A 已被超过 150 家组织支持，并在供应链、金融服务和移动平台等领域投入生产使用
@@ -147,7 +154,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: A2A 的加入将推动智能体通信标准的统一，降低不同框架和供应商之间的集成成本
 
-19. 关于 AI 生成文本水印方案的后续思考（Follow-Up Thoughts on Watermarking Schemes for AI-Generated Text）
+20. 关于 AI 生成文本水印方案的后续思考（Follow-Up Thoughts on Watermarking Schemes for AI-Generated Text）
    [Hacker News/开源项目] https://daringfireball.net/2026/08/follow-up_thoughts_on_watermarking
    - LLM 生成文本时并非总是选择概率最高的词元，温度参数影响随机性和输出质量
    - 水印方案可能降低文本质量，尽管其目的是在不改变温度参数的情况下添加可检测信号
@@ -155,7 +162,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 水印方案的使用存在争议，其影响文本质量的可能性以及秘密应用的道德问题值得深思
 
-20. SecIT Bench：IT和网络安全工作流程中AI智能体的前沿基准测试（SecIT Bench A frontier benchmark for AI agents in IT and security workflows）
+21. SecIT Bench：IT和网络安全工作流程中AI智能体的前沿基准测试（SecIT Bench A frontier benchmark for AI agents in IT and security workflows）
    [Hacker News/开源项目] https://secitbench.cribl.io/
    - SecIT Bench是一个针对IT和网络安全工作流程的AI智能体基准测试工具
    - 旨在为开发者提供性能评估和比较标准
@@ -163,23 +170,23 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: SecIT Bench有望成为AI在IT安全领域应用的重要参考
 
-━━ 产品应用（21）━━
+━━ 产品应用（20）━━
 
-21. AI 股票研究助手 · Streamlit（AI Stock Research Assistant · Streamlit）
+22. AI 股票研究助手 · Streamlit（AI Stock Research Assistant · Streamlit）
    [Hacker News/产品应用] https://ai-stock-research-kiaan.streamlit.app
    - 基于 Streamlit 平台，提供股票研究辅助功能
    - 已有用户评论互动
    
    **点评**: 为股票研究提供便捷工具
 
-22. AI挖掘500年西班牙殖民记录寻找隐藏沉船和失落货物（AI mines 500 years of Spanish colonial records to find hidden wrecks, lost cargo）
+23. AI挖掘500年西班牙殖民记录寻找隐藏沉船和失落货物（AI mines 500 years of Spanish colonial records to find hidden wrecks, lost cargo）
    [Hacker News/产品应用] https://www.tomshardware.com/tech-industry/artificial-intelligence/ai-company-hiring-a-literal-pirate-to-salvage-sunken-treasure-found-by-artificial-intelligence-pays-up-to-usd500k-a-year-mining-80-million-pages-of-spanish-colonial-records-to-find-undiscovered-wrecks-and-lost-cargo
    - AI公司雇佣‘海盗’打捞AI发现的沉船宝藏，年薪高达50万美元
    - 挖掘8000万页西班牙殖民记录以寻找未发现的沉船和失落货物
    
    **点评**: AI技术在文化遗产保护领域展现出巨大潜力
 
-23. Show HN：AI与人类之间的4位桥梁（Show HN: 4bit bridge between AI and humans）
+24. Show HN：AI与人类之间的4位桥梁（Show HN: 4bit bridge between AI and humans）
    [Hacker News/产品应用] https://github.com/YOalphabet/YOalphabet
    - 项目链接：https://github.com/YOalphabet/YOalphabet
    - 评论链接：https://news.ycombinator.com/item?id=49356777
@@ -187,7 +194,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 探索AI与人类沟通的新方式
 
-24. AI 信用额度是否过于绑定于单个应用？（Ask HN: Are AI credits too locked to individual applications?）
+25. AI 信用额度是否过于绑定于单个应用？（Ask HN: Are AI credits too locked to individual applications?）
    [Hacker News/产品应用] https://news.ycombinator.com/item?id=49356667
    - 用户已拥有 AI 信用额度，但仅限用于特定应用
    - 使用 IDE 和 Hostinger 部署代理时信用额度耗尽，需升级订阅或购买代币才能继续使用
@@ -195,7 +202,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 信用额度绑定问题可能影响用户体验，值得关注
 
-25. PlugClaw – 私有AI智能体硬件设备（Show HN: PlugClaw – Private AI agent hardware for any phone or PC）
+26. PlugClaw – 私有AI智能体硬件设备（Show HN: PlugClaw – Private AI agent hardware for any phone or PC）
    [Hacker News/产品应用] https://plugos.net/plugclaw/
    - 一键操作，完成各种任务
    - 支持多种AI模型，可自定义API密钥
@@ -203,7 +210,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 为用户提供便捷的AI操作体验，助力效率提升
 
-26. SERP Lens – 一款在真实浏览器中执行SEO工作的AI智能体（SERP Lens – an AI agent that does SEO work in a real browser）
+27. SERP Lens – 一款在真实浏览器中执行SEO工作的AI智能体（SERP Lens – an AI agent that does SEO work in a real browser）
    [Hacker News/产品应用] https://serplens.com
    - 专为搜索工作定制，提供独特的日常SEO分析工具
    - AI实时审计页面，并提供问题分级、影响和修复建议
@@ -211,7 +218,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 为SEO从业者提供高效、便捷的SEO分析工具
 
-27. AI智能体如同3D打印机：实用之处难以言表（Explaining AI agents is like explaining 3D printers）
+28. AI智能体如同3D打印机：实用之处难以言表（Explaining AI agents is like explaining 3D printers）
    [Hacker News/产品应用] https://www.jitbit.com/alexblog/ai-agents-and-3d-printers/
    - AI智能体如同3D打印机，其价值在于使用后的发现和应用场景的拓展
    - 通过一个实际案例说明AI智能体如何解决特定问题，提升个人效率
@@ -219,7 +226,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: AI智能体虽小，但作用巨大，能够解决特定问题，提升工作效率
 
-28. 从任何设备远程控制家中旧PC上的AI智能体：Relay（Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere）
+29. 从任何设备远程控制家中旧PC上的AI智能体：Relay（Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere）
    [Hacker News/产品应用] https://github.com/elin66alpha/Relay
    - Relay将Claude Code、Codex、OpenCode和Hermes集成到一个界面，支持手机、浏览器或电脑访问
    - 支持跨设备工作，会话持续，可从一台设备开始工作，在另一台设备上继续
@@ -229,7 +236,7 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: Relay为AI智能体远程控制提供了便捷的解决方案，有助于提高工作效率
 
-29. 自主AI是否会超越AI辅助医生成为最佳医疗护理？（Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?）
+30. 自主AI是否会超越AI辅助医生成为最佳医疗护理？（Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?）
    [Hacker News/产品应用] https://jamanetwork.com/journals/jama/fullarticle/2852952?guestAccessKey=562af865-a038-4425-993f-ff25e5e3a130
    - 文章链接：https://jamanetwork.com/journals/jama/fullarticle/2852952?guestAccessKey=562af865-a038-4425-993f-ff25e5e3a130
    - 评论链接：https://news.ycombinator.com/item?id=49356100
@@ -237,21 +244,13 @@ AI 新闻日报 2026-08-19（模板: 技术简报，共 44 篇，总结 44）
    
    **点评**: 文章探讨了自主AI在医疗护理领域的潜力与挑战
 
-30. Warp DD – 30秒内分析科技生态系统的AI工具（Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds）
+31. Warp DD – 30秒内分析科技生态系统的AI工具（Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds）
    [Hacker News/产品应用] https://warpdd.com
    - 30秒内完成科技生态系统分析
    - 适用于快速决策和洞察
    - 目前无评论
    
    **点评**: 为快速决策提供有力工具
-
-31. Monity.ai – 网站变更通知服务（Show HN: Monity.ai – Get notified when any website changes）
-   [Hacker News/产品应用] https://apps.apple.com/pl/app/monity-ai/id6761957823
-   - 提供网站变更实时通知功能
-   - 覆盖多种网站类型，满足不同用户需求
-   - 简洁易用的界面设计，提升用户体验
-   
-   **点评**: 为用户带来更便捷的网络信息获取方式
 
 32. Cursor 利用 GitHub 愤怒情绪，推出竞争对手代码托管平台（Cursor capitalizes on GitHub frustration, launches rival hosting platform）
    [TechCrunch AI/产品应用] https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/

@@ -1,6 +1,12 @@
-/** 结构化输出：extractJson 宽松提取与 SummaryJsonSchema 校验 */
+/** 结构化输出：extractJson 宽松提取与 SummaryJsonSchema / JudgeJsonSchema 校验 */
 import { describe, expect, it } from 'vitest';
-import { SummaryJsonSchema, extractJson, parseSummaryJson } from '../src/schema.js';
+import {
+  JudgeJsonSchema,
+  SummaryJsonSchema,
+  extractJson,
+  parseJudgeJson,
+  parseSummaryJson,
+} from '../src/schema.js';
 
 const VALID = {
   category: '大模型',
@@ -62,5 +68,28 @@ describe('parseSummaryJson', () => {
     if (!r.ok) expect(r.error).toBeTruthy();
     const r2 = parseSummaryJson(JSON.stringify({ ...VALID, category: '不存在的分类' }));
     expect(r2.ok).toBe(false);
+  });
+});
+
+describe('JudgeJsonSchema', () => {
+  const JUDGE = { factual: 4, completeness: 5, fluency: 4, overall: 4.3, comment: '覆盖全面' };
+
+  it('合法评分通过', () => {
+    expect(JudgeJsonSchema.safeParse(JUDGE).success).toBe(true);
+  });
+
+  it('维度越界（0 或 6）被拒', () => {
+    expect(JudgeJsonSchema.safeParse({ ...JUDGE, factual: 0 }).success).toBe(false);
+    expect(JudgeJsonSchema.safeParse({ ...JUDGE, completeness: 6 }).success).toBe(false);
+  });
+
+  it('overall 超出 1~5 被拒', () => {
+    expect(JudgeJsonSchema.safeParse({ ...JUDGE, overall: 5.8 }).success).toBe(false);
+  });
+
+  it('parseJudgeJson 解析围栏输出并给出可读错误', () => {
+    expect(parseJudgeJson('```json\n' + JSON.stringify(JUDGE) + '\n```').ok).toBe(true);
+    const bad = parseJudgeJson('{"factual":9}');
+    expect(bad.ok).toBe(false);
   });
 });

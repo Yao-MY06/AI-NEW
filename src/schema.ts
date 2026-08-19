@@ -16,7 +16,31 @@ export const SummaryJsonSchema = z.object({
 });
 export type SummaryJson = z.infer<typeof SummaryJsonSchema>;
 
-export const JUDGE_SCHEMA_ID = 'judge-v1'; // M5 质量评分使用
+export const JUDGE_SCHEMA_ID = 'judge-v1'; // 同时作为 judge_scores.ver（提示词变化时同步升级）
+
+/** 质量评分契约：三维度 1~5 整数 + 综合 + 短评 */
+export const JudgeJsonSchema = z.object({
+  factual: z.number().int().min(1).max(5),
+  completeness: z.number().int().min(1).max(5),
+  fluency: z.number().int().min(1).max(5),
+  overall: z.number().min(1).max(5),
+  comment: z.string().trim().max(80),
+});
+export type JudgeJson = z.infer<typeof JudgeJsonSchema>;
+
+export type ParseJudgeResult = { ok: true; data: JudgeJson } | { ok: false; error: string };
+
+export function parseJudgeJson(raw: string): ParseJudgeResult {
+  const v = extractJson(raw);
+  if (v === null) return { ok: false, error: '输出中未找到 JSON 对象' };
+  const r = JudgeJsonSchema.safeParse(v);
+  if (r.success) return { ok: true, data: r.data };
+  const issues = r.error.issues
+    .slice(0, 3)
+    .map((i) => `${i.path.join('.') || '(根对象)'} ${i.message}`)
+    .join('；');
+  return { ok: false, error: issues };
+}
 
 /** 宽松提取 JSON：剥 ```json 围栏，截取首个 { 到末个 }；失败返回 null */
 export function extractJson(raw: string): unknown {

@@ -1,8 +1,9 @@
 import { setupProxy } from './proxy.js';
-import { SUMMARY } from './config.js';
+import { JUDGE, SUMMARY } from './config.js';
 import { finishRun, startRun, updateRunCounts } from './db.js';
 import { fetchAllFeeds } from './feeds.js';
 import { processArticles } from './filter.js';
+import { judgeAll } from './judge.js';
 import { summarizeAll } from './summarize.js';
 import { renderReport, renderTextReport, writeReport, writeTextReport } from './report.js';
 import { renderHtmlReport, writeHtmlReport } from './report-html.js';
@@ -55,6 +56,24 @@ async function main(): Promise<void> {
     console.log('\n3/4 AI 总结...');
     const { results, stats } = await summarizeAll(articles, runId);
 
+    // 质量评审（LLM-as-Judge）：评分回填到文章对象供各渲染器展示
+    let judgeOk = 0;
+    if (JUDGE.enabled) {
+      const judged = await judgeAll(articles, results, runId);
+      judgeOk = judged.ok;
+      articles.forEach((a, i) => {
+        const sid = results[i]?.dbSummaryId;
+        const j = sid !== undefined ? judged.bySummaryId.get(sid) : undefined;
+        if (j) {
+          a.quality = j.overall;
+          a.qualityComment = j.comment;
+        }
+      });
+      console.log(
+        `[judge] 评分: 新评 ${judged.ok} / 失败 ${judged.failed} / 已有评分 ${judged.skipped}`,
+      );
+    }
+
     console.log('\n4/4 生成报告...');
     const since = new Date(sinceMs);
     // 分类/中文标题回填到文章对象，供各渲染器使用
@@ -85,6 +104,7 @@ async function main(): Promise<void> {
       summarizedOk: stats.ok,
       summarizedCached: stats.cached,
       summarizedFailed: stats.failed,
+      judgeOk,
     };
   } catch (err) {
     patch = { ok: false, exitError: err instanceof Error ? err.message : String(err) };

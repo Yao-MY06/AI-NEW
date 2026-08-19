@@ -49,6 +49,11 @@ function parseSummary(raw: string): string {
   return (bullets.length ? `<ul>${bullets.join('')}</ul>` : '') + paras.join('');
 }
 
+/** 质量分配色：≥4.5 绿 / ≥3.5 黄 / 更低红 */
+function qualityClass(q: number): 'high' | 'mid' | 'low' {
+  return q >= 4.5 ? 'high' : q >= 3.5 ? 'mid' : 'low';
+}
+
 function articleHtml(a: Article, r: SummaryResult | undefined, i: number): string {
   const badgeColor = SOURCE_COLORS[a.source] ?? 'hsl(210 12% 45%)';
   const cat = a.category ?? '其他';
@@ -59,6 +64,11 @@ function articleHtml(a: Article, r: SummaryResult | undefined, i: number): strin
       : '',
     r?.usedFallbackText
       ? '<span class="tag tag-warn" title="目标网页抓取失败，摘要基于 RSS 简介">基于简介</span>'
+      : '',
+    a.quality !== undefined
+      ? `<span class="tag tag-quality q-${qualityClass(a.quality)}" title="${esc(
+          a.qualityComment || 'LLM-as-Judge 质量评分',
+        )}">★ ${a.quality.toFixed(1)}</span>`
       : '',
   ].join('');
   const body = r?.summary
@@ -128,6 +138,8 @@ export function renderHtmlReport(
 ): string {
   const sources = [...new Set(articles.map((a) => a.source))];
   const pinCount = articles.filter((a) => a.pinned).length;
+  const qualities = articles.map((a) => a.quality).filter((q): q is number => q !== undefined);
+  const qAvg = qualities.length ? qualities.reduce((s, q) => s + q, 0) / qualities.length : null;
   const cats = CATEGORIES.filter((c) => articles.some((a) => (a.category ?? '其他') === c));
   const rs = computeStats(articles);
   const failedFeeds = feeds.filter((f) => !f.ok);
@@ -299,6 +311,10 @@ ${inner}
   .tag-warn { padding: 1px 8px; border-radius: 999px; font-size: 11px; color: var(--warn); border: 1px solid var(--warn); opacity: 0.85; }
   .tag-pin { padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); background: var(--accent-soft); }
   .tag-multi { padding: 1px 8px; border-radius: 999px; font-size: 11px; color: var(--ink-soft); border: 1px solid var(--rule); }
+  .tag-quality { padding: 1px 8px; border-radius: 999px; font-size: 11px; border: 1px solid; cursor: help; }
+  .q-high { color: #0a7d38; border-color: #0a7d38; }
+  .q-mid { color: var(--warn); border-color: var(--warn); }
+  .q-low { color: var(--accent); border-color: var(--accent); }
   .pv-btn {
     font-size: 11px; cursor: pointer; padding: 1px 9px; border-radius: 999px;
     border: 1px dashed var(--ink-faint); background: transparent; color: var(--ink-faint);
@@ -367,6 +383,7 @@ ${inner}
       <span>缓存命中 <b>${stats.cached}</b> 篇</span>
       <span>来源 ${sources.length} 个</span>
       ${pinCount ? `<span>★ 关注 <b>${pinCount}</b> 篇</span>` : ''}
+      ${qAvg !== null ? `<span>质量 <b>★ ${qAvg.toFixed(1)}</b></span>` : ''}
     </div>
   </header>
   ${

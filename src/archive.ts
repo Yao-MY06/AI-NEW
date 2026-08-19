@@ -13,6 +13,7 @@ interface ArchiveItem {
   cat: string;
   src: string;
   link: string;
+  q?: number; // LLM-as-Judge 质量评分（1.0~5.0，无评分时缺省）
 }
 
 interface DayEntry {
@@ -59,7 +60,14 @@ export function updateArchive(
     bySource[a.source] = (bySource[a.source] ?? 0) + 1;
     const cat = a.category ?? '其他';
     byCategory[cat] = (byCategory[cat] ?? 0) + 1;
-    items.push({ t: a.title, zh: a.titleZh, cat, src: a.source, link: a.link });
+    items.push({
+      t: a.title,
+      zh: a.titleZh,
+      cat,
+      src: a.source,
+      link: a.link,
+      q: a.quality !== undefined ? Number(a.quality.toFixed(1)) : undefined,
+    });
   });
   archive[date] = {
     date,
@@ -177,7 +185,7 @@ function renderIndex(archive: Archive): string {
       var cats = Object.entries(d.byCategory).sort(function (a, b) { return b[1] - a[1]; })
         .map(function (c) { return '<span>' + esc(c[0]) + ' ' + c[1] + '</span>'; }).join('');
       var titles = d.items.slice(0, 30).map(function (it) {
-        return '<li><a href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.zh || it.t) + '</a> <i style="opacity:.6">[' + esc(it.src) + ']</i></li>';
+        return '<li><a href="' + esc(it.link) + '" target="_blank" rel="noopener">' + esc(it.zh || it.t) + '</a> <i style="opacity:.6">[' + esc(it.src) + ']</i>' + (it.q ? ' <small style="color:var(--accent)">★' + it.q + '</small>' : '') + '</li>';
       }).join('');
       return '<div class="day" data-text="' + esc((d.items.map(function (i) { return (i.zh || '') + ' ' + i.t; }).join(' ') || '').toLowerCase()) + '">' +
         '<div class="day-date"><a href="./' + d.date + '.html">' + d.date + '</a></div>' +

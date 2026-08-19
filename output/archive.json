@@ -10,323 +10,367 @@
    "The Verge AI": 7
   },
   "byCategory": {
-   "安全风险": 7,
+   "安全风险": 8,
    "大模型": 4,
    "开源项目": 8,
    "其他": 3,
-   "产品应用": 21,
+   "产品应用": 20,
    "行业融资": 1
   },
   "items": [
+   {
+    "t": "Vetted AI code is hard to justify",
+    "zh": "审查AI代码困难重重",
+    "cat": "安全风险",
+    "src": "Hacker News",
+    "link": "https://amoffat.github.io/blog/vetting-burnout.html",
+    "q": 3.3
+   },
    {
     "t": "AI is accelerating elder fraud. Their kids are reckoning with the fallout",
     "zh": "AI加速老年人诈骗，子女面临后果",
     "cat": "安全风险",
     "src": "Hacker News",
-    "link": "https://www.usatoday.com/story/life/health-wellness/2026/08/18/elder-fraud-ai-sandwich-generation-caregivers/90852035007/"
+    "link": "https://www.usatoday.com/story/life/health-wellness/2026/08/18/elder-fraud-ai-sandwich-generation-caregivers/90852035007/",
+    "q": 4.2
    },
    {
     "t": "Young adults in the US are increasingly wary of AI, concerned it will take jobs",
     "zh": "美国年轻人对AI日益警惕，担忧其将取代工作",
     "cat": "安全风险",
     "src": "Hacker News",
-    "link": "https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/"
+    "link": "https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/",
+    "q": 4
    },
    {
     "t": "AI's recursive self-improvement might not come so quickly after all",
     "zh": "AI的递归自我改进可能不会那么快到来",
     "cat": "大模型",
     "src": "Hacker News",
-    "link": "https://www.technologyreview.com/2026/08/18/1142188/ai-recursive-self-improvement/"
+    "link": "https://www.technologyreview.com/2026/08/18/1142188/ai-recursive-self-improvement/",
+    "q": 4
    },
    {
     "t": "Building Shared Memory for AI Agents in Notion",
     "zh": "Notion 构建大模型共享记忆库",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://www.notion.com/blog/building-shared-memory-for-ai-agents-in-notion"
+    "link": "https://www.notion.com/blog/building-shared-memory-for-ai-agents-in-notion",
+    "q": 4
    },
    {
     "t": "Excited and exhausted: life as a tech writer in the AI age",
     "zh": "AI时代科技记者的生活：兴奋与疲惫交织",
     "cat": "其他",
     "src": "Hacker News",
-    "link": "https://elizabethtai.com/2026/08/19/life-as-a-techwriter-in-the-ai-age/"
+    "link": "https://elizabethtai.com/2026/08/19/life-as-a-techwriter-in-the-ai-age/",
+    "q": 3.3
    },
    {
     "t": "200B Tokens Later: A Month of Letting AI Agents Decompile MW2",
     "zh": "AI 助手成功解构《使命召唤：现代战争2》",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://momo5502.com/posts/2026-08-17-mw2-decompilation/"
+    "link": "https://momo5502.com/posts/2026-08-17-mw2-decompilation/",
+    "q": 4
    },
    {
     "t": "Does AI stop children from learning?",
     "zh": "AI 是否阻止了儿童学习？",
     "cat": "其他",
     "src": "Hacker News",
-    "link": "https://www.economist.com/graphic-detail/2026/08/18/does-ai-stop-children-from-learning"
+    "link": "https://www.economist.com/graphic-detail/2026/08/18/does-ai-stop-children-from-learning",
+    "q": 3.3
    },
    {
     "t": "Designing AI with character: what we learned building Berd",
     "zh": "Block开源桌面应用Berd：赋予AI代理个性特征",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://block.xyz/inside/designing-ai-with-character-what-we-learned-building-berd"
+    "link": "https://block.xyz/inside/designing-ai-with-character-what-we-learned-building-berd",
+    "q": 4
    },
    {
     "t": "Get feedback on your AI slop. no accounts",
     "zh": "Get feedback on your AI slop. no accounts",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://slopornot.simplicated.dev"
+    "link": "https://slopornot.simplicated.dev",
+    "q": 4
    },
    {
     "t": "AI Stock Research Assistant · Streamlit",
     "zh": "AI 股票研究助手 · Streamlit",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://ai-stock-research-kiaan.streamlit.app"
+    "link": "https://ai-stock-research-kiaan.streamlit.app",
+    "q": 3.7
    },
    {
     "t": "Looking for an ArXiv Endorser – AI / Computer Science",
     "zh": "寻找 ArXiv 推荐者 – 人工智能/计算机科学领域",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://github.com/paibyun9/EGA-V9"
+    "link": "https://github.com/paibyun9/EGA-V9",
+    "q": 4.2
    },
    {
     "t": "AI mines 500 years of Spanish colonial records to find hidden wrecks, lost cargo",
     "zh": "AI挖掘500年西班牙殖民记录寻找隐藏沉船和失落货物",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://www.tomshardware.com/tech-industry/artificial-intelligence/ai-company-hiring-a-literal-pirate-to-salvage-sunken-treasure-found-by-artificial-intelligence-pays-up-to-usd500k-a-year-mining-80-million-pages-of-spanish-colonial-records-to-find-undiscovered-wrecks-and-lost-cargo"
+    "link": "https://www.tomshardware.com/tech-industry/artificial-intelligence/ai-company-hiring-a-literal-pirate-to-salvage-sunken-treasure-found-by-artificial-intelligence-pays-up-to-usd500k-a-year-mining-80-million-pages-of-spanish-colonial-records-to-find-undiscovered-wrecks-and-lost-cargo",
+    "q": 4
    },
    {
     "t": "Show HN: 4bit bridge between AI and humans",
     "zh": "Show HN：AI与人类之间的4位桥梁",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://github.com/YOalphabet/YOalphabet"
+    "link": "https://github.com/YOalphabet/YOalphabet",
+    "q": 4
    },
    {
     "t": "Ask HN: Are AI credits too locked to individual applications?",
     "zh": "AI 信用额度是否过于绑定于单个应用？",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://news.ycombinator.com/item?id=49356667"
+    "link": "https://news.ycombinator.com/item?id=49356667",
+    "q": 4
    },
    {
     "t": "Model Hypnosis: Strong control of AI via additive subliminal effects",
     "zh": "模型催眠：通过添加性潜意识效应对AI进行强控制",
     "cat": "大模型",
     "src": "Hacker News",
-    "link": "https://arxiv.org/abs/2608.16834"
+    "link": "https://arxiv.org/abs/2608.16834",
+    "q": 4
    },
    {
     "t": "Show HN: PlugClaw – Private AI agent hardware for any phone or PC",
     "zh": "PlugClaw – 私有AI智能体硬件设备",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://plugos.net/plugclaw/"
+    "link": "https://plugos.net/plugclaw/",
+    "q": 4
    },
    {
     "t": "Mathematics in the Age of AI",
     "zh": "AI时代下的数学",
     "cat": "其他",
     "src": "Hacker News",
-    "link": "https://arxiv.org/abs/2608.16753"
+    "link": "https://arxiv.org/abs/2608.16753",
+    "q": 3.3
    },
    {
     "t": "SERP Lens – an AI agent that does SEO work in a real browser",
     "zh": "SERP Lens – 一款在真实浏览器中执行SEO工作的AI智能体",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://serplens.com"
+    "link": "https://serplens.com",
+    "q": 4.5
    },
    {
     "t": "Explaining AI agents is like explaining 3D printers",
     "zh": "AI智能体如同3D打印机：实用之处难以言表",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://www.jitbit.com/alexblog/ai-agents-and-3d-printers/"
+    "link": "https://www.jitbit.com/alexblog/ai-agents-and-3d-printers/",
+    "q": 3.7
    },
    {
     "t": "Show HN: Control AI Agents on Your Old PC at Home from Any Device Anywhere",
     "zh": "从任何设备远程控制家中旧PC上的AI智能体：Relay",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://github.com/elin66alpha/Relay"
+    "link": "https://github.com/elin66alpha/Relay",
+    "q": 5
    },
    {
     "t": "The Recursive Economy: AI Self-Improvement and Scarcity",
     "zh": "递归经济：AI 自我提升与稀缺性",
     "cat": "大模型",
     "src": "Hacker News",
-    "link": "https://recursive-economy.pages.dev/"
+    "link": "https://recursive-economy.pages.dev/",
+    "q": 4.3
    },
    {
     "t": "Agent2Agent (A2A) joins Agentic AI Foundation (AAIF)'s open agentic stack",
     "zh": "A2A 加入 Agentic AI 基金会开源项目库",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://aaif.io/blog/a2a-joins-aaif"
+    "link": "https://aaif.io/blog/a2a-joins-aaif",
+    "q": 4
    },
    {
     "t": "Will Autonomous AI Exceed AI-Aided Physicians as the Best Medical Care?",
     "zh": "自主AI是否会超越AI辅助医生成为最佳医疗护理？",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://jamanetwork.com/journals/jama/fullarticle/2852952?guestAccessKey=562af865-a038-4425-993f-ff25e5e3a130"
+    "link": "https://jamanetwork.com/journals/jama/fullarticle/2852952?guestAccessKey=562af865-a038-4425-993f-ff25e5e3a130",
+    "q": 3.3
    },
    {
     "t": "Show HN: Warp DD – AI that analyzes technology ecosystems in ~30 seconds",
     "zh": "Warp DD – 30秒内分析科技生态系统的AI工具",
     "cat": "产品应用",
     "src": "Hacker News",
-    "link": "https://warpdd.com"
+    "link": "https://warpdd.com",
+    "q": 4
    },
    {
     "t": "The End-State Fallacy: Where Is AI Security Headed?",
     "zh": "AI 安全的未来何在？",
     "cat": "安全风险",
     "src": "Hacker News",
-    "link": "https://endstatefallacy.com/"
+    "link": "https://endstatefallacy.com/",
+    "q": 3.7
    },
    {
     "t": "Sutton and Javed: Why AI Models Stop Learning, and How to Start It Again [video]",
     "zh": "Sutton和Javed：为何AI模型停止学习，以及如何重新启动学习[视频]",
     "cat": "大模型",
     "src": "Hacker News",
-    "link": "https://www.youtube.com/watch?v=xH7U7w9Qzlo"
+    "link": "https://www.youtube.com/watch?v=xH7U7w9Qzlo",
+    "q": 4
    },
    {
     "t": "She told no one about her agony except ChatGPT. What her death reveals about AI",
     "zh": "ChatGPT揭示的AI风险：自杀案例引发关注",
     "cat": "安全风险",
     "src": "Hacker News",
-    "link": "https://www.npr.org/2026/08/18/nx-s1-5929575/ai-suicide-risks-mental-health"
+    "link": "https://www.npr.org/2026/08/18/nx-s1-5929575/ai-suicide-risks-mental-health",
+    "q": 3.3
    },
    {
     "t": "Follow-Up Thoughts on Watermarking Schemes for AI-Generated Text",
     "zh": "关于 AI 生成文本水印方案的后续思考",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://daringfireball.net/2026/08/follow-up_thoughts_on_watermarking"
+    "link": "https://daringfireball.net/2026/08/follow-up_thoughts_on_watermarking",
+    "q": 3.7
    },
    {
     "t": "SecIT Bench A frontier benchmark for AI agents in IT and security workflows",
     "zh": "SecIT Bench：IT和网络安全工作流程中AI智能体的前沿基准测试",
     "cat": "开源项目",
     "src": "Hacker News",
-    "link": "https://secitbench.cribl.io/"
-   },
-   {
-    "t": "Show HN: Monity.ai – Get notified when any website changes",
-    "zh": "Monity.ai – 网站变更通知服务",
-    "cat": "产品应用",
-    "src": "Hacker News",
-    "link": "https://apps.apple.com/pl/app/monity-ai/id6761957823"
+    "link": "https://secitbench.cribl.io/",
+    "q": 4
    },
    {
     "t": "Cursor capitalizes on GitHub frustration, launches rival hosting platform",
     "zh": "Cursor 利用 GitHub 愤怒情绪，推出竞争对手代码托管平台",
     "cat": "产品应用",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/"
+    "link": "https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/",
+    "q": 4
    },
    {
     "t": "Robin Williams’ Instagram account brought back to fight ‘AI abuse’",
     "zh": "罗宾·威廉姆斯Instagram账号回归对抗AI滥用",
     "cat": "产品应用",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/entertainment/981644/robin-williams-instagram-account-ai"
+    "link": "https://www.theverge.com/entertainment/981644/robin-williams-instagram-account-ai",
+    "q": 4
    },
    {
     "t": "OpenAI lays out new security changes after its AI hacked Hugging Face",
     "zh": "OpenAI 针对AI越狱Hugging Face事件发布新安全措施",
     "cat": "安全风险",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/ai-artificial-intelligence/981640/openai-security-changes-ai-hugging-face-hack"
+    "link": "https://www.theverge.com/ai-artificial-intelligence/981640/openai-security-changes-ai-hugging-face-hack",
+    "q": 4
    },
    {
     "t": "OpenAI institutes new safeguards after Hugging Face breach",
     "zh": "OpenAI 在 Hugging Face 窃取事件后实施新安全措施",
     "cat": "安全风险",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach/"
+    "link": "https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach/",
+    "q": 5
    },
    {
     "t": "Etched’s valuation doubles to $21B in a month",
     "zh": "Etched 估值一个月内翻倍达210亿美元",
     "cat": "行业融资",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/etcheds-valuation-doubles-to-21b-in-a-month/"
+    "link": "https://techcrunch.com/2026/08/18/etcheds-valuation-doubles-to-21b-in-a-month/",
+    "q": 3.7
    },
    {
     "t": "Why Apple’s camera-equipped AirPods may not be the ‘pervert pods’ consumers fear",
     "zh": "苹果摄像头AirPods可能不是消费者担心的‘色情Pods’",
     "cat": "产品应用",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/why-apples-camera-equipped-airpods-may-not-be-the-pervert-pods-consumers-fear/"
+    "link": "https://techcrunch.com/2026/08/18/why-apples-camera-equipped-airpods-may-not-be-the-pervert-pods-consumers-fear/",
+    "q": 4.3
    },
    {
     "t": "Warp’s new system is an out-of-the-box software factory for AI development",
     "zh": "Warp 推出 AI 软件工厂新系统 Warp Factories",
     "cat": "产品应用",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development/"
+    "link": "https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development/",
+    "q": 4
    },
    {
     "t": "OpenAI launches a safer ChatGPT for teens — years after teens started using it",
     "zh": "OpenAI 推出针对青少年的更安全 ChatGPT — 青少年开始使用它多年之后",
     "cat": "产品应用",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/openai-launches-a-safer-chatgpt-for-teens-years-after-teens-started-using-it/"
+    "link": "https://techcrunch.com/2026/08/18/openai-launches-a-safer-chatgpt-for-teens-years-after-teens-started-using-it/",
+    "q": 4
    },
    {
     "t": "Perplexity’s free AI offer left it with millions more users in India",
     "zh": "Perplexity 免费AI服务助力印度用户激增",
     "cat": "产品应用",
     "src": "TechCrunch AI",
-    "link": "https://techcrunch.com/2026/08/18/perplexitys-free-ai-offer-left-it-with-millions-more-users-in-india/"
+    "link": "https://techcrunch.com/2026/08/18/perplexitys-free-ai-offer-left-it-with-millions-more-users-in-india/",
+    "q": 4
    },
    {
     "t": "Firefox’s Smart Window promises a better AI browser",
     "zh": "Firefox 智能窗口承诺带来更好的 AI 浏览器",
     "cat": "产品应用",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/ai-artificial-intelligence/981283/mozilla-firefox-smart-window-ai-features"
+    "link": "https://www.theverge.com/ai-artificial-intelligence/981283/mozilla-firefox-smart-window-ai-features",
+    "q": 5
    },
    {
     "t": "Google’s Pet Memory forgot who my cats are",
     "zh": "谷歌宠物记忆功能：识别家中猫咪身份",
     "cat": "产品应用",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/tech/981269/google-home-gemini-pet-memory-nest-camera-review"
+    "link": "https://www.theverge.com/tech/981269/google-home-gemini-pet-memory-nest-camera-review",
+    "q": 4
    },
    {
     "t": "Elon Musk broke the FAA — Palantir is picking up the pieces",
     "zh": "Elon Musk 挑战 FAA，Palantir 接手修复工作",
     "cat": "安全风险",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/transportation/981194/faa-air-traffic-elon-musk-peter-thiel-palantir"
+    "link": "https://www.theverge.com/transportation/981194/faa-air-traffic-elon-musk-peter-thiel-palantir",
+    "q": 4
    },
    {
     "t": "ChatGPT is getting a dedicated mode for teens",
     "zh": "OpenAI 推出针对青少年的 ChatGPT 专用模式",
     "cat": "产品应用",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/ai-artificial-intelligence/981333/openai-chatgpt-teen-mode"
+    "link": "https://www.theverge.com/ai-artificial-intelligence/981333/openai-chatgpt-teen-mode",
+    "q": 4.5
    },
    {
     "t": "Apple’s camera-equipped AirPods appear in leaked video",
     "zh": "苹果摄像头版AirPods首次亮相泄露视频中",
     "cat": "产品应用",
     "src": "The Verge AI",
-    "link": "https://www.theverge.com/tech/981326/apple-airpods-with-cameras-demo-video-leak"
+    "link": "https://www.theverge.com/tech/981326/apple-airpods-with-cameras-demo-video-leak",
+    "q": 4
    }
   ],
-  "ts": 1787123712497
+  "ts": 1787124094094
  }
 }
