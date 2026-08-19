@@ -31,6 +31,12 @@ export interface SummaryResult {
   category?: string;
   /** AI 翻译的中文标题 */
   titleZh?: string;
+  /** 结构化要点（v3 起有值；文本兜底时缺省） */
+  points?: string[];
+  /** 结构化一句话点评 */
+  verdict?: string;
+  /** true = JSON 链路失败走了旧版文本解析兜底 */
+  degraded?: boolean;
   /** 摘要落库后的 summaries.id（供质量评分挂钩） */
   dbSummaryId?: number;
   error?: string;
