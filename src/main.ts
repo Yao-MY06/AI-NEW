@@ -1,6 +1,7 @@
 import { setupProxy } from './proxy.js';
+import { SUMMARY } from './config.js';
 import { fetchAllFeeds } from './feeds.js';
-import { filterArticles } from './filter.js';
+import { processArticles } from './filter.js';
 import { summarizeAll } from './summarize.js';
 import { renderReport, writeReport } from './report.js';
 import { renderHtmlReport, writeHtmlReport } from './report-html.js';
@@ -19,7 +20,9 @@ async function main(): Promise<void> {
 
   const days = parseDays();
   const sinceMs = Date.now() - days * 24 * 3600 * 1000;
-  console.log(`== AI 新闻聚合器 == 时间窗口: 最近 ${days} 天\n`);
+  console.log(
+    `== AI 新闻聚合器 == 模板: ${SUMMARY.label}（${SUMMARY.style === 'detailed' ? '详细' : '精简'}）· 时间窗口: 最近 ${days} 天\n`,
+  );
 
   console.log('1/4 抓取 RSS 源...');
   const feeds = await fetchAllFeeds();
@@ -30,8 +33,14 @@ async function main(): Promise<void> {
   }
 
   console.log('\n2/4 过滤与排序...');
-  const articles = filterArticles(all, sinceMs);
-  console.log(`窗口内 ${articles.length} 篇（原始 ${all.length} 条）`);
+  const { articles, stats: ps } = processArticles(all, {
+    sinceMs,
+    pinKeywords: SUMMARY.pinKeywords,
+    blockKeywords: SUMMARY.blockKeywords,
+  });
+  console.log(
+    `窗口内 ${ps.inWindow} 篇（合并同题 ${ps.titleMerged}，关键词过滤 ${ps.blocked}，关注置顶 ${ps.pinned}）→ 最终 ${articles.length} 篇`,
+  );
   if (!articles.length) {
     console.log('时间窗口内没有文章，结束');
     return;

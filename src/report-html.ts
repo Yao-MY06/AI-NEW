@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { OUTPUT_DIR } from './config.js';
+import { OUTPUT_DIR, SUMMARY } from './config.js';
 import { fmtDateTime, todayStr } from './util.js';
 import type { Article, FeedResult, SummaryResult } from './types.js';
 import type { SummarizeStats } from './summarize.js';
@@ -44,9 +44,15 @@ function parseSummary(raw: string): string {
 
 function articleHtml(a: Article, r: SummaryResult | undefined, i: number): string {
   const badgeColor = SOURCE_COLORS[a.source] ?? 'hsl(210 12% 45%)';
-  const fallbackTag = r?.usedFallbackText
-    ? '<span class="tag tag-warn" title="目标网页抓取失败，摘要基于 RSS 简介">基于简介</span>'
-    : '';
+  const tags = [
+    a.pinned ? '<span class="tag tag-pin">★ 关注</span>' : '',
+    a.alsoReportedBy?.length
+      ? `<span class="tag tag-multi" title="另有 ${esc(a.alsoReportedBy.join('、'))} 报道同一事件">多源报道</span>`
+      : '',
+    r?.usedFallbackText
+      ? '<span class="tag tag-warn" title="目标网页抓取失败，摘要基于 RSS 简介">基于简介</span>'
+      : '',
+  ].join('');
   const body = r?.summary
     ? parseSummary(r.summary)
     : '<p class="failed">AI 总结失败' +
@@ -61,7 +67,7 @@ function articleHtml(a: Article, r: SummaryResult | undefined, i: number): strin
     <div class="meta">
       <span class="badge"><i style="background:${badgeColor}"></i>${esc(a.source)}</span>
       <time>${fmtDateTime(a.pubDate)}</time>
-      ${fallbackTag}
+      ${tags}
     </div>
     ${body}
   </div>
@@ -76,6 +82,7 @@ export function renderHtmlReport(
   since: Date,
 ): string {
   const sources = [...new Set(articles.map((a) => a.source))];
+  const pinCount = articles.filter((a) => a.pinned).length;
   const perSource = sources.map(
     (s) =>
       `<button class="tab" data-filter="${esc(s)}"><i style="background:${
@@ -206,6 +213,22 @@ export function renderHtmlReport(
     padding: 1px 8px; border-radius: 999px; font-size: 11px;
     color: var(--warn); border: 1px solid var(--warn); opacity: 0.85;
   }
+  .tag-pin {
+    padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+    color: var(--accent); border: 1px solid var(--accent); background: var(--accent-soft);
+  }
+  .tag-multi {
+    padding: 1px 8px; border-radius: 999px; font-size: 11px;
+    color: var(--ink-soft); border: 1px solid var(--rule);
+  }
+  .divider {
+    display: flex; align-items: center; gap: 12px; margin: 4px 0 -8px;
+    color: var(--ink-faint); font-size: 11.5px; letter-spacing: 0.12em;
+    animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .divider::before, .divider::after {
+    content: ""; flex: 1; height: 1px; background: var(--rule);
+  }
   .body ul { list-style: none; margin: 0 0 4px; }
   .body li {
     position: relative; padding-left: 16px; margin-bottom: 6px;
@@ -259,10 +282,12 @@ export function renderHtmlReport(
       </div>
     </div>
     <div class="stats">
+      <span>模板 <b>${SUMMARY.label}</b></span>
       <span>共 <b>${articles.length}</b> 篇</span>
       <span>AI 总结 <b>${stats.ok}</b> / 失败 <b>${stats.failed}</b></span>
       <span>缓存命中 <b>${stats.cached}</b> 篇</span>
       <span>来源 ${sources.length} 个</span>
+      ${pinCount ? `<span>★ 关注 <b>${pinCount}</b> 篇</span>` : ''}
     </div>
   </header>
   ${
@@ -278,7 +303,15 @@ export function renderHtmlReport(
     <input class="search" type="search" placeholder="搜索标题或摘要…" id="q">
   </nav>
   <main class="entries" id="entries">
-${articles.map((a, i) => articleHtml(a, results[i], i)).join('\n')}
+${articles
+  .map((a, i) => {
+    const divider =
+      pinCount > 0 && pinCount < articles.length && i === pinCount
+        ? '<div class="divider">以下为其余资讯</div>\n'
+        : '';
+    return divider + articleHtml(a, results[i], i);
+  })
+  .join('\n')}
   </main>
   <div class="empty" id="empty">没有匹配的文章</div>
   <footer>
