@@ -1,0 +1,26 @@
+{
+  "name": "ainew",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI 新闻聚合器：抓取 RSS 源，AI 总结要点，输出 Markdown 日报",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "dotenv": "^16.4.5",
+    "linkedom": "^0.18.9",
+    "openai": "^6.0.0",
+    "rss-parser": "^3.13.0",
+    "undici": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
