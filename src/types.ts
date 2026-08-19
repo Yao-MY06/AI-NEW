@@ -11,6 +11,12 @@ export interface Article {
   alsoReportedBy?: string[];
   /** 命中关注关键词，置顶展示 */
   pinned?: boolean;
+  /** AI 归类的分类（CATEGORIES 之一，总结失败时缺省） */
+  category?: string;
+  /** AI 翻译的中文标题 */
+  titleZh?: string;
+  /** 总结阶段抓取到的正文片段（用于前端预览弹窗） */
+  previewText?: string;
 }
 
 /** 单篇总结结果 */
@@ -21,6 +27,10 @@ export interface SummaryResult {
   usedFallbackText: boolean;
   /** 实际生成摘要的模型名称（缓存命中时为空） */
   servedBy?: string;
+  /** AI 归类的分类 */
+  category?: string;
+  /** AI 翻译的中文标题 */
+  titleZh?: string;
   error?: string;
 }
 

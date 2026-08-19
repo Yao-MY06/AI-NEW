@@ -6,6 +6,8 @@ import { config as loadDotenv } from 'dotenv';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const OUTPUT_DIR = path.join(ROOT, 'output');
 export const CACHE_FILE = path.join(ROOT, '.cache.json');
+/** RSS 源的持久化配置（Web 后台可改），不存在时回退到内置 FEEDS */
+export const FEEDS_FILE = path.join(ROOT, 'feeds.json');
 
 // 在读取任何环境变量之前加载 .env
 loadDotenv({ path: path.join(ROOT, '.env') });
@@ -48,6 +50,20 @@ export const SETTINGS = {
   userAgent:
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
 };
+
+/** 文章分类固定列表（模型总结时从中选择，日报按此分栏） */
+export const CATEGORIES = [
+  '大模型', '安全风险', '硬件芯片', '行业融资', '政策监管', '开源项目', '产品应用', '其他',
+] as const;
+
+/** 中英术语对照，写入提示词保证翻译一致性 */
+export const GLOSSARY: [string, string][] = [
+  ['LLM', '大模型'], ['inference', '推理'], ['token', '词元'], ['fine-tuning', '微调'],
+  ['AI agent', '智能体'], ['benchmark', '基准测试'], ['open source', '开源'],
+  ['multimodal', '多模态'], ['alignment', '对齐'], ['guardrail', '护栏'],
+  ['context window', '上下文窗口'], ['hallucination', '幻觉'], ['quantization', '量化'],
+  ['distillation', '蒸馏'], ['open weights', '开放权重'], ['reasoning model', '推理模型'],
+];
 
 // ===== 摘要模板 =====
 

@@ -1,19 +1,21 @@
 import OpenAI from 'openai';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { CACHE_FILE, SETTINGS, SUMMARY, buildProviders } from './config.js';
+import { CATEGORIES, CACHE_FILE, GLOSSARY, SETTINGS, SUMMARY, buildProviders } from './config.js';
 import { pool } from './util.js';
 import { fetchArticleText } from './fetchPage.js';
 import type { Article, SummaryResult } from './types.js';
 
 interface CacheEntry {
   summary: string;
+  category?: string;
+  titleZh?: string;
   ts: number;
-  /** 摘要配置版本（模板/风格/点评），不一致则重新总结 */
+  /** 摘要配置版本（模板/风格/点评/格式），不一致则重新总结 */
   ver: string;
 }
 type Cache = Record<string, CacheEntry>;
 
-const CACHE_VER = `${SUMMARY.templateId}:${SUMMARY.style}:${SUMMARY.verdict ? 'v' : 'nv'}`;
+const CACHE_VER = `${SUMMARY.templateId}:${SUMMARY.style}:${SUMMARY.verdict ? 'v' : 'nv'}:v2`;
 
 function loadCache(): Cache {
   try {
@@ -34,15 +36,55 @@ function saveCache(cache: Cache): void {
   writeFileSync(CACHE_FILE, JSON.stringify(pruned, null, 2), 'utf-8');
 }
 
+/** 解析模型输出的头部字段（分类/标题），正文原样返回 */
+export interface ParsedSummary {
+  category?: string;
+  titleZh?: string;
+  body: string;
+}
+
+function normalizeCategory(s: string): string {
+  const hit = (CATEGORIES as readonly string[]).find((c) => s.includes(c));
+  return hit ?? '其他';
+}
+
+export function parseSummaryBlock(raw: string): ParsedSummary {
+  const lines = raw.split('\n');
+  let category: string | undefined;
+  let titleZh: string | undefined;
+  while (lines.length) {
+    const head = lines[0].trim();
+    const c = head.match(/^(?:分类|类别)\s*[:：]\s*(.+)$/);
+    if (c) {
+      category = normalizeCategory(c[1].trim());
+      lines.shift();
+      continue;
+    }
+    const t = head.match(/^标题\s*[:：]\s*(.+)$/);
+    if (t) {
+      titleZh = t[1].trim();
+      lines.shift();
+      continue;
+    }
+    break;
+  }
+  return { category, titleZh, body: lines.join('\n').trim() };
+}
+
 function buildSystemPrompt(): string {
+  const glossary = GLOSSARY.map(([en, zh]) => `${en}→${zh}`).join('；');
   const lines = [
-    `${SUMMARY.persona}。根据用户提供的英文 AI 新闻内容，用简体中文输出：`,
+    `${SUMMARY.persona}。根据用户提供的英文 AI 新闻内容，用简体中文严格按以下格式输出：`,
+    `分类: <从【${CATEGORIES.join('、')}】中选一个最贴切的>`,
+    `标题: <该新闻的中文标题，简洁准确，保留产品/公司英文名>`,
     SUMMARY.style === 'detailed'
-      ? '1. 4~6 条核心要点，每条以 "- " 开头，包含关键细节、数字与影响面，保留产品名、公司等信息；'
-      : '1. 2~3 条核心要点，每条以 "- " 开头，一句话概括，保留产品名、公司、数字等关键信息；',
+      ? '然后输出 4~6 条核心要点，每条以 "- " 开头，包含关键细节、数字与影响面，保留产品名、公司等信息；'
+      : '然后输出 2~3 条核心要点，每条以 "- " 开头，一句话概括，保留产品名、公司、数字；',
   ];
-  if (SUMMARY.verdict) lines.push('2. 空一行后，以 "**点评**: " 开头给出一句话点评。');
-  lines.push('直接输出内容，不要任何前言、标题或解释。');
+  if (SUMMARY.verdict) lines.push('最后空一行，以 "**点评**: " 开头给出一句话点评。');
+  lines.push(
+    `术语统一：${glossary}。产品/公司名保留英文（OpenAI、GPT、Claude 等）。直接输出，不要任何前言或解释。`,
+  );
   return lines.join('\n');
 }
 
@@ -94,7 +136,13 @@ async function summarizeOne(
 ): Promise<SummaryResult> {
   const c = cache[article.link];
   if (c && c.ver === CACHE_VER) {
-    return { summary: c.summary, fromCache: true, usedFallbackText: false };
+    return {
+      summary: c.summary,
+      category: c.category,
+      titleZh: c.titleZh,
+      fromCache: true,
+      usedFallbackText: false,
+    };
   }
 
   // HN 条目优先抓目标网页正文；自述帖（指向 HN 页面本身）与抓取失败均降级用 RSS 简介
@@ -102,8 +150,12 @@ async function summarizeOne(
   let usedFallbackText = false;
   if (article.kind === 'hn' && !/news\.ycombinator\.com\//i.test(article.link)) {
     const pageText = await fetchArticleText(article.link);
-    if (pageText) text = pageText;
-    else usedFallbackText = true;
+    if (pageText) {
+      text = pageText;
+      article.previewText = pageText.slice(0, 1500); // 供前端预览弹窗使用
+    } else {
+      usedFallbackText = true;
+    }
   }
 
   const user = `标题: ${article.title}\n来源: ${article.source}${article.alsoReportedBy?.length ? `（另有 ${article.alsoReportedBy.join('、')} 报道）` : ''}\n\n内容:\n${text || '（无正文，请根据标题合理概括）'}`;
@@ -113,11 +165,25 @@ async function summarizeOne(
   for (const p of providers) {
     if (p.disabled) continue;
     try {
-      const summary = await callProvider(p, system, user);
+      const raw = await callProvider(p, system, user);
+      const parsed = parseSummaryBlock(raw);
       p.consecutiveFails = 0;
       usage[p.name] = (usage[p.name] ?? 0) + 1;
-      cache[article.link] = { summary, ts: Date.now(), ver: CACHE_VER };
-      return { summary, fromCache: false, usedFallbackText, servedBy: p.name };
+      cache[article.link] = {
+        summary: parsed.body,
+        category: parsed.category,
+        titleZh: parsed.titleZh,
+        ts: Date.now(),
+        ver: CACHE_VER,
+      };
+      return {
+        summary: parsed.body,
+        category: parsed.category,
+        titleZh: parsed.titleZh,
+        fromCache: false,
+        usedFallbackText,
+        servedBy: p.name,
+      };
     } catch (err) {
       lastErr = err instanceof Error ? err.message : String(err);
       p.consecutiveFails++;

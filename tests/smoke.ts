@@ -1,5 +1,6 @@
-/** 冒烟测试：processArticles 的同题合并 / 黑名单 / 关注置顶（纯函数，无副作用）*/
+/** 冒烟测试：processArticles 的同题合并 / 黑名单 / 关注置顶 + 摘要结构化解析（纯函数）*/
 import { processArticles } from '../src/filter.js';
+import { parseSummaryBlock } from '../src/summarize.js';
 import type { Article } from '../src/types.js';
 
 const A = (title: string, link: string, source: string, text = ''): Article => ({
@@ -33,6 +34,16 @@ for (const a of articles) {
   );
 }
 
+// 摘要结构化解析：分类 + 中文标题 + 正文
+const parsed = parseSummaryBlock(
+  '分类: 安全风险\n标题: 某厂商修复高危漏洞\n- 要点一\n- 要点二\n\n**点评**: 值得关注',
+);
+const parsedOk =
+  parsed.category === '安全风险' &&
+  parsed.titleZh === '某厂商修复高危漏洞' &&
+  parsed.body.startsWith('- 要点一');
+console.log('parsed:', parsed);
+
 const pass =
   stats.titleMerged === 1 &&
   stats.urlDup === 1 &&
@@ -40,7 +51,8 @@ const pass =
   stats.pinned === 1 &&
   articles.length === 2 &&
   articles[0].pinned === true &&
-  articles.some((a) => a.alsoReportedBy?.includes('The Verge AI'));
+  articles.some((a) => a.alsoReportedBy?.includes('The Verge AI')) &&
+  parsedOk;
 
 console.log(pass ? '\n冒烟测试通过 ✓' : '\n冒烟测试失败 ✗');
 process.exit(pass ? 0 : 1);
