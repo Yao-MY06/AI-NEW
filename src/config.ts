@@ -6,6 +6,11 @@ import { config as loadDotenv } from 'dotenv';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const OUTPUT_DIR = path.join(ROOT, 'output');
 export const CACHE_FILE = path.join(ROOT, '.cache.json');
+/** 持久化数据目录（SQLite 库 + 可编辑设置），Docker 部署时挂载为卷 */
+export const DATA_DIR = path.join(ROOT, 'data');
+export const DB_FILE = process.env.AINEW_DB || path.join(DATA_DIR, 'ainew.db');
+/** Web 后台可写的运行时设置（模板/关键词/采样参数），见 src/settings.ts */
+export const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 /** RSS 源的持久化配置（Web 后台可改），不存在时回退到内置 FEEDS */
 export const FEEDS_FILE = path.join(ROOT, 'feeds.json');
 

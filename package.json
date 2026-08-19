@@ -11,6 +11,7 @@
     "start": "tsx src/main.ts",
     "admin": "tsx src/admin.ts",
     "test": "vitest run",
+    "db:check": "tsx scripts/db-check.ts",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
+    "better-sqlite3": "^12.11.1",
     "dotenv": "^16.4.5",
     "linkedom": "^0.18.9",
     "openai": "^6.0.0",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^22.0.0",
     "eslint": "^9.39.5",
     "prettier": "^3.9.6",

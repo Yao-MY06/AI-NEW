@@ -1,40 +1,12 @@
 import OpenAI from 'openai';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { CATEGORIES, CACHE_FILE, GLOSSARY, SETTINGS, SUMMARY, buildProviders } from './config.js';
+import { CATEGORIES, GLOSSARY, SETTINGS, SUMMARY, buildProviders } from './config.js';
+import { getCachedSummary, logModelCall, saveSummary, upsertArticle } from './db.js';
 import { pool } from './util.js';
 import { fetchArticleText } from './fetchPage.js';
 import type { Article, SummaryResult } from './types.js';
 
-interface CacheEntry {
-  summary: string;
-  category?: string;
-  titleZh?: string;
-  ts: number;
-  /** 摘要配置版本（模板/风格/点评/格式），不一致则重新总结 */
-  ver: string;
-}
-type Cache = Record<string, CacheEntry>;
-
+/** 摘要缓存版本（模板/风格/点评/格式任一变化即整体失效），随 articles.ver 入库 */
 const CACHE_VER = `${SUMMARY.templateId}:${SUMMARY.style}:${SUMMARY.verdict ? 'v' : 'nv'}:v2`;
-
-function loadCache(): Cache {
-  try {
-    if (!existsSync(CACHE_FILE)) return {};
-    return JSON.parse(readFileSync(CACHE_FILE, 'utf-8')) as Cache;
-  } catch {
-    return {};
-  }
-}
-
-/** 保存缓存并顺带清理过期条目 */
-function saveCache(cache: Cache): void {
-  const cutoff = Date.now() - SETTINGS.cacheTtlDays * 24 * 3600 * 1000;
-  const pruned: Cache = {};
-  for (const [k, v] of Object.entries(cache)) {
-    if (v.ts >= cutoff) pruned[k] = v;
-  }
-  writeFileSync(CACHE_FILE, JSON.stringify(pruned, null, 2), 'utf-8');
-}
 
 /** 解析模型输出的头部字段（分类/标题），正文原样返回 */
 export interface ParsedSummary {
@@ -114,7 +86,15 @@ function initProviders(): Provider[] {
   }));
 }
 
-async function callProvider(p: Provider, system: string, user: string): Promise<string> {
+interface ProviderReply {
+  text: string;
+  promptTokens: number;
+  completionTokens: number;
+  latencyMs: number;
+}
+
+async function callProvider(p: Provider, system: string, user: string): Promise<ProviderReply> {
+  const t0 = Date.now();
   const res = await p.client.chat.completions.create({
     model: p.model,
     temperature: 0.3,
@@ -124,26 +104,43 @@ async function callProvider(p: Provider, system: string, user: string): Promise<
       { role: 'user', content: user },
     ],
   });
-  const summary = res.choices[0]?.message?.content?.trim();
-  if (!summary) throw new Error('模型返回空内容');
-  return summary;
+  const text = res.choices[0]?.message?.content?.trim();
+  if (!text) throw new Error('模型返回空内容');
+  return {
+    text,
+    promptTokens: res.usage?.prompt_tokens ?? 0,
+    completionTokens: res.usage?.completion_tokens ?? 0,
+    latencyMs: Date.now() - t0,
+  };
 }
+
+/** 每个供应商的用量累计：调用数 + token 明细（落库 model_calls，此处用于控制台汇总） */
+export interface UsageCount {
+  calls: number;
+  promptTokens: number;
+  completionTokens: number;
+}
+export type UsageMap = Record<string, UsageCount>;
+
+const fmtK = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 
 async function summarizeOne(
   providers: Provider[],
   article: Article,
-  cache: Cache,
   system: string,
-  usage: Record<string, number>,
+  usage: UsageMap,
+  runId: number,
 ): Promise<SummaryResult> {
-  const c = cache[article.link];
-  if (c && c.ver === CACHE_VER) {
+  const artId = upsertArticle(article);
+  const cached = getCachedSummary(artId, CACHE_VER);
+  if (cached?.body) {
     return {
-      summary: c.summary,
-      category: c.category,
-      titleZh: c.titleZh,
+      summary: cached.body,
+      category: cached.category,
+      titleZh: cached.titleZh,
       fromCache: true,
       usedFallbackText: false,
+      dbSummaryId: cached.summaryId,
     };
   }
 
@@ -162,22 +159,39 @@ async function summarizeOne(
 
   const user = `标题: ${article.title}\n来源: ${article.source}${article.alsoReportedBy?.length ? `（另有 ${article.alsoReportedBy.join('、')} 报道）` : ''}\n\n内容:\n${text || '（无正文，请根据标题合理概括）'}`;
 
-  // 按候选顺序尝试，失败自动切换下一模型
+  // 按候选顺序尝试，失败自动切换下一模型；每次尝试（成败均）记入 model_calls
   let lastErr = '';
+  let attempt = 0;
   for (const p of providers) {
     if (p.disabled) continue;
+    const t0 = Date.now();
+    const attemptNo = ++attempt;
     try {
-      const raw = await callProvider(p, system, user);
-      const parsed = parseSummaryBlock(raw);
+      const reply = await callProvider(p, system, user);
+      const parsed = parseSummaryBlock(reply.text);
+      logModelCall({
+        runId,
+        purpose: 'summary',
+        provider: p.name,
+        model: p.model,
+        articleId: artId,
+        attempt: attemptNo,
+        ok: true,
+        promptTokens: reply.promptTokens,
+        completionTokens: reply.completionTokens,
+        latencyMs: reply.latencyMs,
+      });
       p.consecutiveFails = 0;
-      usage[p.name] = (usage[p.name] ?? 0) + 1;
-      cache[article.link] = {
-        summary: parsed.body,
+      const u = (usage[p.name] ??= { calls: 0, promptTokens: 0, completionTokens: 0 });
+      u.calls++;
+      u.promptTokens += reply.promptTokens;
+      u.completionTokens += reply.completionTokens;
+      const dbSummaryId = saveSummary(artId, CACHE_VER, {
+        body: parsed.body,
         category: parsed.category,
         titleZh: parsed.titleZh,
-        ts: Date.now(),
-        ver: CACHE_VER,
-      };
+        servedBy: p.name,
+      });
       return {
         summary: parsed.body,
         category: parsed.category,
@@ -185,9 +199,21 @@ async function summarizeOne(
         fromCache: false,
         usedFallbackText,
         servedBy: p.name,
+        dbSummaryId,
       };
     } catch (err) {
       lastErr = err instanceof Error ? err.message : String(err);
+      logModelCall({
+        runId,
+        purpose: 'summary',
+        provider: p.name,
+        model: p.model,
+        articleId: artId,
+        attempt: attemptNo,
+        ok: false,
+        error: lastErr,
+        latencyMs: Date.now() - t0,
+      });
       p.consecutiveFails++;
       console.warn(`[ai] ${p.name} 调用失败(${lastErr})，尝试下一候选`);
       if (p.consecutiveFails >= SETTINGS.providerFailsLimit && !p.disabled) {
@@ -204,11 +230,12 @@ export interface SummarizeStats {
   ok: number;
   cached: number;
   failed: number;
-  usage: Record<string, number>;
+  usage: UsageMap;
 }
 
 export async function summarizeAll(
   articles: Article[],
+  runId: number,
 ): Promise<{ results: SummaryResult[]; stats: SummarizeStats }> {
   const providers = initProviders();
   if (!providers.length) {
@@ -226,21 +253,21 @@ export async function summarizeAll(
   console.log(`[ai] 模型候选: ${providers.map((p) => `${p.name}(${p.model})`).join(' → ')}`);
 
   const system = buildSystemPrompt();
-  const cache = loadCache();
-  const usage: Record<string, number> = {};
+  const usage: UsageMap = {};
   let done = 0;
   const results = await pool(articles, SETTINGS.summaryConcurrency, async (a) => {
-    const r = await summarizeOne(providers, a, cache, system, usage);
+    const r = await summarizeOne(providers, a, system, usage, runId);
     done++;
     const flag = r.summary ? (r.fromCache ? '缓存' : (r.servedBy ?? '完成')) : `失败(${r.error})`;
     console.log(`[ai] ${done}/${articles.length} ${flag} - ${a.title.slice(0, 50)}`);
-    saveCache(cache); // 写穿保存，中途崩溃不丢已完成的总结
-    return r;
+    return r; // 摘要已随篇入库（SQLite 事务），中途崩溃不丢已完成的总结
   });
-  saveCache(cache);
 
   const usageStr = Object.entries(usage)
-    .map(([k, v]) => `${k}=${v}`)
+    .map(
+      ([k, v]) =>
+        `${k}=${v.calls}次(输入${fmtK(v.promptTokens)}/输出${fmtK(v.completionTokens)} tokens)`,
+    )
     .join(', ');
   if (usageStr) console.log(`[ai] 模型用量: ${usageStr}`);
 

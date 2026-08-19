@@ -31,6 +31,8 @@ export interface SummaryResult {
   category?: string;
   /** AI 翻译的中文标题 */
   titleZh?: string;
+  /** 摘要落库后的 summaries.id（供质量评分挂钩） */
+  dbSummaryId?: number;
   error?: string;
 }
 
